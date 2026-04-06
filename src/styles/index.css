@@ -1,0 +1,165 @@
+/* Custom Fonts - must be first */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@import "tailwindcss";
+
+/* Base Styles */
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #F8FAFC;
+}
+
+/* Glass Card Effect */
+.glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Custom Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes ripple {
+  0% { transform: scale(1); opacity: 0.4; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.animate-ripple {
+  animation: ripple 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Small ripple for recording button */
+@keyframes ripple-small {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+.animate-ripple-small {
+  animation: ripple-small 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes talk {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05) rotate(1deg); }
+}
+
+.animate-talk {
+  animation: talk 0.3s ease-in-out infinite;
+}
+
+/* Shimmer Effect for Skeleton Loading */
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+.skeleton-shimmer {
+    background: linear-gradient(90deg, #f1f5f9 25%, #f8fafc 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+}
+
+/* Tailwind animate-in utilities */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-from-bottom {
+  from { transform: translateY(1rem); }
+  to { transform: translateY(0); }
+}
+
+.animate-in {
+  animation-duration: 0.7s;
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fade-in;
+}
+
+.slide-in-from-bottom-4 {
+  animation-name: fade-in, slide-in-from-bottom;
+}
+
+.duration-700 {
+  animation-duration: 700ms;
+}
+
+/* ======================================
+   CUSTOM PRIMARY COLOR OVERRIDES
+   Replace default red-500 (#ef4444) with #CC0000
+   ====================================== */
+
+:root {
+  --color-primary: #CC0000;
+  --color-primary-hover: #A00000;
+  --color-primary-light: #FFE6E6;
+}
+
+/* Background colors */
+.bg-red-500 {
+  background-color: var(--color-primary) !important;
+}
+
+.bg-red-600, .hover\:bg-red-600:hover, .from-red-600, .hover\:from-red-600:hover {
+  background-color: var(--color-primary-hover) !important;
+}
+
+.to-red-400, .hover\:to-red-500:hover, .from-red-500 {
+  background-color: #DD0000 !important;
+}
+
+.bg-red-50 {
+  background-color: var(--color-primary-light) !important;
+}
+
+.bg-red-100 {
+  background-color: #FFB3B3 !important;
+}
+
+/* Text colors */
+.text-red-500 {
+  color: var(--color-primary) !important;
+}
+
+.text-red-600, .hover\:text-red-600:hover {
+  color: var(--color-primary-hover) !important;
+}
+
+/* Border colors */
+.border-red-500 {
+  border-color: var(--color-primary) !important;
+}
+
+/* Hover states */
+.hover\:bg-red-500:hover {
+  background-color: var(--color-primary) !important;
+}
+
+.hover\:text-red-500:hover {
+  color: var(--color-primary) !important;
+}
+
+/* Focus states */
+.focus\:border-red-500:focus {
+  border-color: var(--color-primary) !important;
+}
+
+.focus\:ring-red-500\/20:focus {
+  --tw-ring-color: rgb(204 0 0 / 0.2) !important;
+}
+
+/* Shadow colors */
+.shadow-red-50, .shadow-red-100, .shadow-red-200 {
+  --tw-shadow-color: rgb(204 0 0 / 0.15) !important;
+  --tw-shadow: var(--tw-shadow-colored) !important;
+}

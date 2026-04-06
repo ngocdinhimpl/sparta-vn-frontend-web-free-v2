@@ -1,0 +1,35 @@
+# Firestore Security Rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    /* ===================== MASTER VOCABULARY ===================== */
+    // Shared vocabulary collection - Public read access (no auth required)
+    // Write access for authenticated users (for migration and admin)
+    match /vocabulary/{vocabId} {
+      allow read: true; // Public read - accessible by all users
+      allow write: if request.auth != null; // Only authenticated users can write
+    }
+
+    /* ===================== RANKINGS ===================== */
+    // Global rankings collection
+    match /rankings/{rankingId} {
+      allow read: true; // Anyone can view rankings
+      // Allow users to write ranking records even if not logged in
+      allow write: if true;
+    }
+    
+    /* ===================== USER DATA ===================== */
+    // User-specific data - Only the owner can read/write
+    match /users/{userId} {
+      // Main user document
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Sub-collections
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+}

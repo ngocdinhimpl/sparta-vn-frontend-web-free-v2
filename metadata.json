@@ -1,0 +1,8 @@
+
+{
+  "name": "Sparta Dashboard - Language Training",
+  "description": "A high-performance language learning dashboard for pronunciation analysis and real-time coaching with Gemini Live.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

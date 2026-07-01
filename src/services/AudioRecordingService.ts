@@ -3,6 +3,8 @@
  * Stores recordings in IndexedDB by unique ID
  */
 
+import { getSpeechRecordingConstraints, normalizeAudioSamples } from './audioProcessing';
+
 const DB_NAME = 'SpartaAudioDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'recordings';
@@ -71,7 +73,7 @@ class AudioRecordingService {
 
     this.audioChunks = [];
 
-    this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    this.stream = await navigator.mediaDevices.getUserMedia(getSpeechRecordingConstraints());
 
     const mimeType =
       MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
@@ -247,8 +249,10 @@ class AudioRecordingService {
       channelData = monoData;
     }
 
+    const normalizedData = normalizeAudioSamples(channelData);
+
     // 3. Encode to 16-bit PCM WAV
-    const wavBuffer = this.encodeWAV(channelData, this.WAV_SAMPLE_RATE);
+    const wavBuffer = this.encodeWAV(normalizedData, this.WAV_SAMPLE_RATE);
     
     actx.close();
     return new Blob([wavBuffer], { type: 'audio/wav' });

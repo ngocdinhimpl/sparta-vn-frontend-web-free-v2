@@ -9,11 +9,6 @@ interface SidebarProps {
   onTabChange: (tab: AppTab) => void;
 }
 
-const AlobridgeBranding: React.FC = () => (
-  <div className="flex flex-col items-center gap-1 mt-auto pt-6 border-t border-slate-50 opacity-80 hover:opacity-100 transition-opacity">
-    <span className="text-[11px] font-black text-slate-800 uppercase tracking-[0.3em] mt-1">Alobridge</span>
-  </div>
-);
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
   const { t } = useTranslation();
@@ -52,7 +47,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
           </button>
         ))}
       </nav>
-      <AlobridgeBranding />
     </aside>
   );
 };

@@ -7,6 +7,7 @@ import { storageService } from '@/services/storageService';
 import { audioRecordingService } from '@/services/AudioRecordingService';
 import { useToast } from '@/contexts/ToastContext';
 import { useLoading } from '@/contexts/LoadingContext';
+import logo from '@/assets/logo/logo.png';
 
 interface LoginProps {
   onLogin: () => void;
@@ -60,11 +61,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onBack, onSignUpClick }) => {
 
       <div className="max-w-md w-full flex flex-col items-center mt-12 mb-12 relative z-10">
         {/* Logo Section */}
-        <div className="w-24 h-24 bg-red-500 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-red-100 mb-10 transform -rotate-6">
-          <div className="text-white transform rotate-6">
-            <Icons.Globe />
-          </div>
-        </div>
+        <img src={logo} alt="Sparta Logo" className="w-24 h-24 object-contain mb-10 shadow-2xl shadow-red-100 rounded-[2rem] transform -rotate-6" />
 
         <div className="text-center mb-16">
           <h1 className="text-4xl font-black text-slate-900 mb-2">

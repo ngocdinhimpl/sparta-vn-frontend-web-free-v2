@@ -7,6 +7,7 @@ import { useToast } from '@/contexts/ToastContext';
 import { useLoading } from '@/contexts/LoadingContext';
 import { storageService } from '@/services/storageService';
 import { audioRecordingService } from '@/services/AudioRecordingService';
+import logo from '@/assets/logo/logo.png';
 
 interface RegisterProps {
   onRegister: () => void;
@@ -88,9 +89,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSignInClick, onBack }
 
       <div className="max-w-md w-full flex flex-col items-center mt-10 mb-12 relative z-10">
         {/* Logo Section */}
-        <div className="w-24 h-24 bg-red-500 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-red-100 mb-8 transform -rotate-3 transition-transform hover:rotate-0">
-          <div className="text-white font-black text-4xl">S!</div>
-        </div>
+        <img src={logo} alt="Sparta Logo" className="w-24 h-24 object-contain mb-8 shadow-2xl shadow-red-100 rounded-[2rem] transform -rotate-3 transition-transform hover:rotate-0" />
 
         <div className="text-center mb-10">
           <h1 className="text-3xl font-black text-slate-900 mb-1">

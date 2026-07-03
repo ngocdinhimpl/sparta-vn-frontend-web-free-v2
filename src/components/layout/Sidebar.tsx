@@ -2,6 +2,7 @@ import React from 'react';
 import { AppTab } from '@/types';
 import { Icons } from '@/constants';
 import { useTranslation } from '@/i18n';
+import logo from '@/assets/logo/logo.png';
 
 interface SidebarProps {
   activeTab: AppTab;
@@ -10,15 +11,6 @@ interface SidebarProps {
 
 const AlobridgeBranding: React.FC = () => (
   <div className="flex flex-col items-center gap-1 mt-auto pt-6 border-t border-slate-50 opacity-80 hover:opacity-100 transition-opacity">
-    <div className="flex items-end gap-[3px] h-10">
-      {[20, 45, 65, 85, 100, 85, 65, 45, 20].map((height, i) => (
-        <div 
-          key={i} 
-          className="w-[4px] bg-red-600 rounded-full shadow-[0_0_10px_rgba(220,38,38,0.2)]"
-          style={{ height: `${height}%` }}
-        />
-      ))}
-    </div>
     <span className="text-[11px] font-black text-slate-800 uppercase tracking-[0.3em] mt-1">Alobridge</span>
   </div>
 );
@@ -37,7 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
   return (
     <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 h-full p-6">
       <div className="flex items-center gap-3 mb-10 px-2">
-        <div className="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center text-white font-bold text-xl">S</div>
+        <img src={logo} alt="Sparta Logo" className="w-10 h-10 object-contain rounded-xl" />
         <h1 className="text-xl font-bold text-slate-900 tracking-tight">Sparta</h1>
       </div>
 

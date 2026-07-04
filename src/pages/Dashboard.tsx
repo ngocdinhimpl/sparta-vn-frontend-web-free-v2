@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
 import { SOUNDS_DATA, Icons } from '@/constants';
 import { Stat } from '@/types';
 import StatCard from '@/components/common/StatCard';
@@ -27,7 +26,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onStartTraining, onViewAllWeakSou
   const [weeklyScores, setWeeklyScores] = useState<Array<{ day: string; score: number }>>([]);
   const [weakWords, setWeakWords] = useState<Array<{ word: string; accuracy: number; level: 1 | 2 | 3 }>>([]);
   const [shouldAnimateScore, setShouldAnimateScore] = useState(false);
-  const [showBackupPrompt, setShowBackupPrompt] = useState(false);
   
   // Avatar animation hook
   const { currentAvatarImage, currentLevel } = useDashboardAvatar();
@@ -43,10 +41,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onStartTraining, onViewAllWeakSou
   
 
   useEffect(() => {
-    // Only show prompt if not logged in and this is NOT the very first mount of the dashboard in this session
-    if (!currentUser && sessionStorage.getItem('dashboard_mounted') === 'true') {
-      setShowBackupPrompt(true);
-    }
     sessionStorage.setItem('dashboard_mounted', 'true');
 
     const loadStats = async () => {
@@ -323,42 +317,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onStartTraining, onViewAllWeakSou
         </div>
       </div>
 
-      {showBackupPrompt && createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl animate-in zoom-in-95 duration-300">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center text-red-500 mb-6 mx-auto">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            </div>
-            
-            <h3 className="text-xl font-bold text-slate-900 text-center mb-4">
-              学習データをバックアップしましょう！
-            </h3>
-            
-            <p className="text-sm text-slate-500 leading-relaxed text-center mb-8">
-              現在の学習記録はご利用の端末にのみ保存されています。アカウントを登録してデータを同期すると、機種変更時やキャッシュクリア時でも安心です。
-            </p>
-            
-            <div className="flex flex-col gap-3">
-              <button 
-                onClick={() => {
-                  setShowBackupPrompt(false);
-                  onLoginClick();
-                }}
-                className="w-full py-4 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold transition-colors shadow-lg shadow-red-200"
-              >
-                無料登録 / ログイン
-              </button>
-              <button 
-                onClick={() => setShowBackupPrompt(false)}
-                className="w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold transition-colors"
-              >
-                今はしない
-              </button>
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
     </div>
   );
 };

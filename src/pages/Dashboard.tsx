@@ -340,11 +340,12 @@ const Dashboard: React.FC<DashboardProps> = ({ onStartTraining, onViewAllWeakSou
             
             <div className="flex flex-col gap-3">
               <button 
+                disabled={true}
                 onClick={() => {
                   setShowBackupPrompt(false);
                   onLoginClick();
                 }}
-                className="w-full py-4 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold transition-colors shadow-lg shadow-red-200"
+                className="w-full py-4 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold transition-colors shadow-lg shadow-red-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-500 disabled:shadow-none"
               >
                 無料登録 / ログイン
               </button>

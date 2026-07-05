@@ -140,8 +140,9 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
             </button>
           ) : (
             <button 
+              disabled={true}
               onClick={onLoginClick}
-              className="w-full bg-[#1A1F2B] text-white py-5 rounded-xl font-black text-sm uppercase tracking-[0.15em] flex items-center justify-center gap-3 hover:bg-slate-800 transition-all shadow-xl active:scale-[0.98]"
+              className="w-full bg-[#1A1F2B] text-white py-5 rounded-xl font-black text-sm uppercase tracking-[0.15em] flex items-center justify-center gap-3 hover:bg-slate-800 transition-all shadow-xl active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#1A1F2B] disabled:active:scale-100 disabled:shadow-none"
             >
               <Icons.Login />
               {t('settings.loginRegister')}

@@ -128,14 +128,23 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
           </div>
         )} */}
 
+        {/* Action Button Section */}
         <div className="mt-auto px-4 pb-12">
-          {currentUser && (
+          {currentUser ? (
              <button 
               onClick={handleLogout}
               className="w-full bg-[#1A1F2B] text-white py-5 rounded-xl font-black text-sm uppercase tracking-[0.15em] flex items-center justify-center gap-3 hover:bg-slate-800 transition-all shadow-xl active:scale-[0.98]"
             >
               <Icons.Logout />
               Logout
+            </button>
+          ) : (
+            <button 
+              onClick={onLoginClick}
+              className="w-full bg-[#1A1F2B] text-white py-5 rounded-xl font-black text-sm uppercase tracking-[0.15em] flex items-center justify-center gap-3 hover:bg-slate-800 transition-all shadow-xl active:scale-[0.98]"
+            >
+              <Icons.Login />
+              {t('settings.loginRegister')}
             </button>
           )}
         </div>

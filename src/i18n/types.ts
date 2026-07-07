@@ -21,6 +21,7 @@ export interface Translations {
     history: string;
     ranking: string;
     settings: string;
+    feedback: string;
   };
   avatar_selection: {
     title_first: string;
@@ -165,6 +166,16 @@ export interface Translations {
     professional_training: string;
     professional_pronunciation: string;
     enter_name: string;
+  };
+  feedback: {
+    title: string;
+    subtitle: string;
+    label: string;
+    placeholder: string;
+    submitting: string;
+    submit: string;
+    success: string;
+    error: string;
   };
 }
 

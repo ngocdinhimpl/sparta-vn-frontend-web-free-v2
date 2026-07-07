@@ -20,6 +20,7 @@ import WeakSounds from '@/pages/WeakSounds';
 import AvatarSelection from '@/pages/AvatarSelection';
 import LevelCompletionFlow from '@/pages/LevelCompletionFlow';
 import Ranking from '@/pages/Ranking';
+import Feedback from '@/pages/Feedback';
 import { Icons } from '@/constants';
 import { useTranslation } from '@/i18n';
 
@@ -290,6 +291,8 @@ const App: React.FC = () => {
             currentUser={currentUser}
           />
         );
+      case AppTab.FEEDBACK:
+        return <Feedback />;
       case AppTab.AVATAR_SELECTION:
         return (
           <AvatarSelection
@@ -409,6 +412,7 @@ const App: React.FC = () => {
           <NavItem icon="History" label={t('nav.history')} active={activeTab === AppTab.HISTORY} onClick={() => setActiveTab(AppTab.HISTORY)} />
           <NavItem icon="Trophy" label={t('nav.ranking')} active={activeTab === AppTab.RANKING} onClick={() => setActiveTab(AppTab.RANKING)} />
           <NavItem icon="Settings" label={t('nav.settings')} active={activeTab === AppTab.SETTINGS} onClick={() => setActiveTab(AppTab.SETTINGS)} />
+          <NavItem icon="Message" label={t('nav.feedback')} active={activeTab === AppTab.FEEDBACK} onClick={() => setActiveTab(AppTab.FEEDBACK)} />
         </div>
       </main>
     </div>

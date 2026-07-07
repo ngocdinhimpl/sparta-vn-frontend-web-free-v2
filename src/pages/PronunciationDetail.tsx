@@ -5,7 +5,8 @@ import { useLoading } from '@/contexts/LoadingContext';
 import { useTranslation } from '@/i18n';
 import { useToast } from '@/contexts/ToastContext';
 import { storageService } from '@/services/storageService';
-import { auth } from '@/services/firebase';
+import { auth, analytics } from '@/services/firebase';
+import { logEvent } from 'firebase/analytics';
 
 interface PronunciationDetailProps {
   item: any;
@@ -80,6 +81,11 @@ const PronunciationDetail: React.FC<PronunciationDetailProps> = ({
       await audioRecordingService.startRecording();
       recordingStartTimeRef.current = Date.now();
       setIsRecording(true);
+      
+      // Log event to Firebase Analytics
+      if (analytics) {
+        logEvent(analytics, 'training');
+      }
     } catch (error) {
       showToast(error instanceof Error ? error.message : t('pronunciation.error_recording'), 'error');
     }

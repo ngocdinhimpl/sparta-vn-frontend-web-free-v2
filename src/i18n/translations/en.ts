@@ -23,6 +23,7 @@ export const en: Translations = {
     history: 'History',
     ranking: 'Ranking',
     settings: 'Settings',
+    feedback: 'Feedback',
   },
   ranking: {
     subtitle: 'See the legends and the fallen ones',
@@ -165,7 +166,17 @@ export const en: Translations = {
     welcomeBack: 'Welcome Back',
     createAccount: 'Create Account',
     professional_training: 'Professional Training',
-    professional_pronunciation: 'Professional Pronunciation Training',
+    professional_pronunciation: 'Start your professional pronunciation training now',
     enter_name: 'Enter your name',
+  },
+  feedback: {
+    title: 'Feedback',
+    subtitle: 'Please let us know your thoughts, bugs, or suggestions for improvement.',
+    label: 'Suggestion Box',
+    placeholder: 'Enter your feedback here...',
+    submitting: 'Submitting...',
+    submit: 'Submit',
+    success: 'Thank you for your feedback!',
+    error: 'Submission failed. Please try again.',
   },
 };

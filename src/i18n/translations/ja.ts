@@ -23,6 +23,7 @@ export const ja: Translations = {
     history: '履歴',
     ranking: 'ランキング',
     settings: '設定',
+    feedback: '問い合わせ',
   },
   ranking: {
     subtitle: '伝説の勇者たちと奈落した者たち',
@@ -165,7 +166,17 @@ export const ja: Translations = {
     welcomeBack: 'おかえりなさい',
     createAccount: 'アカウントを作成',
     professional_training: 'プロフェッショナルトレーニング',
-    professional_pronunciation: 'プロフェッショナル発音トレーニング',
-    enter_name: 'お名前を入力',
+    professional_pronunciation: '専門的な発音トレーニングを開始しましょう',
+    enter_name: '名前を入力',
+  },
+  feedback: {
+    title: '問い合わせ',
+    subtitle: 'ご利用いただいた感想や不具合、改善してほしい点などお聞かせください。',
+    label: 'ご意見箱',
+    placeholder: 'フィードバックをここに入力してください...',
+    submitting: '送信中...',
+    submit: '送信',
+    success: 'フィードバックを送信しました！',
+    error: '送信に失敗しました。もう一度お試しください。',
   },
 };

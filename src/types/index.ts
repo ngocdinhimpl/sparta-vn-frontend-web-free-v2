@@ -23,6 +23,7 @@ export enum AppTab {
   RANKING = 'ranking',
   SETTINGS = 'settings',
   AVATAR_SELECTION = 'avatar_selection',
+  FEEDBACK = 'feedback',
 }
 
 export interface VocabItem {

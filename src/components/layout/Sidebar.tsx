@@ -19,6 +19,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
     { id: AppTab.HISTORY, icon: Icons.History, label: t('nav.history') },
     { id: AppTab.RANKING, icon: Icons.Trophy, label: t('nav.ranking') },
     { id: AppTab.SETTINGS, icon: Icons.Settings, label: t('nav.settings') },
+    { id: AppTab.FEEDBACK, icon: Icons.Message, label: t('nav.feedback') },
   ];
 
   return (

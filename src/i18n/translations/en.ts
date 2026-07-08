@@ -23,7 +23,7 @@ export const en: Translations = {
     history: 'History',
     ranking: 'Ranking',
     settings: 'Settings',
-    feedback: 'Feedback',
+    feedback: '(Beta) Suggestion Box',
   },
   ranking: {
     subtitle: 'See the legends and the fallen ones',
@@ -170,8 +170,9 @@ export const en: Translations = {
     enter_name: 'Enter your name',
   },
   feedback: {
-    title: 'Feedback',
+    title: '(Beta) Suggestion Box',
     subtitle: 'Please let us know your thoughts, bugs, or suggestions for improvement.',
+    privacyNote: '(Sender information will not be collected)',
     label: 'Suggestion Box',
     placeholder: 'Enter your feedback here...',
     submitting: 'Submitting...',

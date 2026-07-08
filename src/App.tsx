@@ -412,15 +412,32 @@ const App: React.FC = () => {
           <NavItem icon="History" label={t('nav.history')} active={activeTab === AppTab.HISTORY} onClick={() => setActiveTab(AppTab.HISTORY)} />
           <NavItem icon="Trophy" label={t('nav.ranking')} active={activeTab === AppTab.RANKING} onClick={() => setActiveTab(AppTab.RANKING)} />
           <NavItem icon="Settings" label={t('nav.settings')} active={activeTab === AppTab.SETTINGS} onClick={() => setActiveTab(AppTab.SETTINGS)} />
-          <NavItem icon="Message" label={t('nav.feedback')} active={activeTab === AppTab.FEEDBACK} onClick={() => setActiveTab(AppTab.FEEDBACK)} />
+          <NavItem icon="Message" label={t('nav.feedback')} active={activeTab === AppTab.FEEDBACK} isSpecial={true} onClick={() => setActiveTab(AppTab.FEEDBACK)} />
         </div>
       </main>
     </div>
   );
 };
 
-const NavItem: React.FC<{ icon: string, label: string, active: boolean, onClick: () => void }> = ({ icon, label, active, onClick }) => {
+const NavItem: React.FC<{ icon: string, label: string, active: boolean, isSpecial?: boolean, onClick: () => void }> = ({ icon, label, active, isSpecial, onClick }) => {
   const Icon = (Icons as any)[icon];
+  
+  if (isSpecial) {
+    return (
+      <button 
+        onClick={onClick}
+        className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all shadow-sm ${
+          active 
+            ? 'bg-yellow-200 text-yellow-900 border border-yellow-400' 
+            : 'bg-yellow-100 text-yellow-800 border border-yellow-300'
+        }`}
+      >
+        <Icon />
+        <span className="text-[9px] font-bold uppercase tracking-wider whitespace-nowrap mt-1">{label}</span>
+      </button>
+    );
+  }
+
   return (
     <button 
       onClick={onClick}

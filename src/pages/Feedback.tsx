@@ -18,7 +18,7 @@ const Feedback: React.FC = () => {
     try {
       await addDoc(collection(db, 'feedbacks'), {
         content: content,
-        userId: auth.currentUser?.uid || 'anonymous',
+        userId: 'anonymous', // Enforce anonymity
         createdAt: serverTimestamp(),
       });
       showToast(t('feedback.success'), 'success');
@@ -37,6 +37,9 @@ const Feedback: React.FC = () => {
         <h2 className="text-3xl font-extrabold text-slate-900">{t('feedback.title')}</h2>
         <p className="text-slate-500 mt-2 font-medium">
           {t('feedback.subtitle')}
+        </p>
+        <p className="text-red-500 mt-1 font-semibold text-sm">
+          {t('feedback.privacyNote')}
         </p>
       </header>
 

@@ -170,6 +170,7 @@ export interface Translations {
   feedback: {
     title: string;
     subtitle: string;
+    privacyNote: string;
     label: string;
     placeholder: string;
     submitting: string;

@@ -23,7 +23,7 @@ export const ja: Translations = {
     history: '履歴',
     ranking: 'ランキング',
     settings: '設定',
-    feedback: '問い合わせ',
+    feedback: '(β版)ご意見箱',
   },
   ranking: {
     subtitle: '伝説の勇者たちと奈落した者たち',
@@ -170,8 +170,9 @@ export const ja: Translations = {
     enter_name: '名前を入力',
   },
   feedback: {
-    title: '問い合わせ',
+    title: '(β版)ご意見箱',
     subtitle: 'ご利用いただいた感想や不具合、改善してほしい点などお聞かせください。',
+    privacyNote: '（送信した方の情報は取得されません）',
     label: 'ご意見箱',
     placeholder: 'フィードバックをここに入力してください...',
     submitting: '送信中...',

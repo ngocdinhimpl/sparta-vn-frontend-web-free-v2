@@ -19,7 +19,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
     { id: AppTab.HISTORY, icon: Icons.History, label: t('nav.history') },
     { id: AppTab.RANKING, icon: Icons.Trophy, label: t('nav.ranking') },
     { id: AppTab.SETTINGS, icon: Icons.Settings, label: t('nav.settings') },
-    { id: AppTab.FEEDBACK, icon: Icons.Message, label: t('nav.feedback') },
   ];
 
   return (
@@ -48,6 +47,21 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
           </button>
         ))}
       </nav>
+
+      {/* Beta Feedback Button */}
+      <div className="mt-4 pt-4 border-t border-slate-100">
+        <button
+          onClick={() => onTabChange(AppTab.FEEDBACK)}
+          className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold transition-all shadow-sm border-2 ${
+            activeTab === AppTab.FEEDBACK
+              ? 'bg-yellow-100 text-yellow-800 border-yellow-400 shadow-yellow-200'
+              : 'bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100 hover:border-yellow-300'
+          }`}
+        >
+          <Icons.Message />
+          <span>{t('nav.feedback')}</span>
+        </button>
+      </div>
     </aside>
   );
 };

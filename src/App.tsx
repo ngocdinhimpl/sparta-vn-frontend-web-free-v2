@@ -21,6 +21,7 @@ import AvatarSelection from '@/pages/AvatarSelection';
 import LevelCompletionFlow from '@/pages/LevelCompletionFlow';
 import Ranking from '@/pages/Ranking';
 import Feedback from '@/pages/Feedback';
+import TermsOfUse from '@/pages/TermsOfUse';
 import { Icons } from '@/constants';
 import { useTranslation } from '@/i18n';
 
@@ -32,7 +33,7 @@ enum LessonFlow {
   RESULT = 'RESULT'
 }
 
-type AuthScreen = 'login' | 'register' | null;
+type AuthScreen = 'login' | 'register' | 'terms' | null;
 
 const App: React.FC = () => {
   const { t } = useTranslation();
@@ -273,7 +274,7 @@ const App: React.FC = () => {
             }} 
             onViewAllWeakSounds={() => setActiveTab(AppTab.WEAK_SOUNDS)}
             currentUser={currentUser}
-            onLoginClick={() => setAuthScreen('login')}
+            onLoginClick={() => setAuthScreen('terms')}
           />
         );
       case AppTab.TRAINING:
@@ -287,7 +288,7 @@ const App: React.FC = () => {
       case AppTab.SETTINGS:
         return (
           <Settings 
-            onLoginClick={() => setAuthScreen('login')} 
+            onLoginClick={() => setAuthScreen('terms')} 
             currentUser={currentUser}
           />
         );
@@ -308,7 +309,7 @@ const App: React.FC = () => {
             onStartTraining={() => setActiveTab(AppTab.TRAINING)} 
             onViewAllWeakSounds={() => setActiveTab(AppTab.WEAK_SOUNDS)}
             currentUser={currentUser}
-            onLoginClick={() => setAuthScreen('login')}
+            onLoginClick={() => setAuthScreen('terms')}
           />
         );
     }
@@ -324,6 +325,15 @@ const App: React.FC = () => {
   }
 
   // If showing auth screens, render them exclusively (no main layout behind)
+  if (authScreen === 'terms') {
+    return (
+      <TermsOfUse
+        onAgree={() => setAuthScreen('login')}
+        onBack={() => setAuthScreen(null)}
+      />
+    );
+  }
+
   if (authScreen === 'login') {
     return (
       <Login 

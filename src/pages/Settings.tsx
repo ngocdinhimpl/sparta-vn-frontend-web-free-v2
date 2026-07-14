@@ -18,10 +18,22 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
   const { t, language, setLanguage } = useTranslation();
   const { showToast } = useToast();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [showResetConfirmModal, setShowResetConfirmModal] = useState(false);
 
   const handleLanguageSelect = (lang: Language) => {
     setLanguage(lang);
     setShowLanguageModal(false);
+  };
+
+  const handleReset = async () => {
+    try {
+      await storageService.clearAllPreferences();
+      await audioRecordingService.clearAllRecordings();
+      window.location.reload();
+    } catch (error) {
+      console.error('Reset error:', error);
+      showToast('Reset failed', 'error');
+    }
   };
 
   const handleLogout = async () => {
@@ -40,6 +52,10 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
   };
 
   const languageDisplay = language === 'ja' ? t('settings.japanese') : t('settings.english');
+
+  const resetAppText = language === 'ja' ? 'リセット' : 'Reset App';
+  const resetConfirmTitle = language === 'ja' ? 'リセットの確認' : 'Confirm Reset';
+  const resetConfirmMessage = language === 'ja' ? 'すべてのデータをリセットしますか？この操作は元に戻せません。' : 'Are you sure you want to reset all data? This action cannot be undone.';
 
   return (
     <>
@@ -115,6 +131,22 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
                 </svg>
               </div>
             </button>
+
+            {/* App Reset Row */}
+            <button 
+              onClick={() => setShowResetConfirmModal(true)}
+              className="w-full flex items-center justify-between p-5 hover:bg-slate-50 transition-colors"
+            >
+              <div className="flex items-center gap-4 text-red-600 font-bold">
+                <div className="text-red-400">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                </div>
+                <span>{resetAppText}</span>
+              </div>
+              <div className="text-slate-300">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </button>
           </div>
         </div>
 
@@ -140,9 +172,8 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
             </button>
           ) : (
             <button 
-              disabled={true}
               onClick={onLoginClick}
-              className="w-full bg-[#1A1F2B] text-white py-5 rounded-xl font-black text-sm uppercase tracking-[0.15em] flex items-center justify-center gap-3 hover:bg-slate-800 transition-all shadow-xl active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#1A1F2B] disabled:active:scale-100 disabled:shadow-none"
+              className="w-full bg-[#1A1F2B] text-white py-5 rounded-xl font-black text-sm uppercase tracking-[0.15em] flex items-center justify-center gap-3 hover:bg-slate-800 transition-all shadow-xl active:scale-[0.98]"
             >
               <Icons.Login />
               {t('settings.loginRegister')}
@@ -217,6 +248,37 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
             >
               {t('common.back')}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Reset Confirmation Modal */}
+      {showResetConfirmModal && (
+        <div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-in fade-in duration-200"
+          onClick={() => setShowResetConfirmModal(false)}
+        >
+          <div 
+            className="bg-white rounded-3xl p-6 mx-4 max-w-sm w-full shadow-2xl animate-in slide-in-from-bottom-4 duration-300"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-black text-slate-800 mb-4">{resetConfirmTitle}</h3>
+            <p className="text-slate-600 mb-6 font-medium leading-relaxed">{resetConfirmMessage}</p>
+            
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowResetConfirmModal(false)}
+                className="flex-1 py-3 text-slate-600 font-bold bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+              >
+                {t('common.back')}
+              </button>
+              <button
+                onClick={handleReset}
+                className="flex-1 py-3 text-white font-bold bg-red-500 hover:bg-red-600 rounded-xl transition-colors shadow-lg shadow-red-500/30"
+              >
+                OK
+              </button>
+            </div>
           </div>
         </div>
       )}

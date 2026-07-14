@@ -1,0 +1,28 @@
+--- TERMS OF USE ---
+
+1. Purpose of the Service
+This application provides an environment for practicing and evaluating Vietnamese pronunciation based on voice recognition technology.
+
+2. Account Registration
+- Users must provide a valid Name (Full Name) and Email Address to register an account.
+- Users are responsible for keeping their login information and passwords secure.
+- Upon registration, users may choose to synchronize their learning data (scores, progress) from their local device to the cloud storage system.
+
+3. Collection and Processing of Voice Data
+- The core of the service is the voice recording and pronunciation analysis feature. When using the "Record" feature, the application will collect your voice data.
+- This audio file will be uploaded to storage servers (Google Drive, Azure) so that the AI/API system can analyze and score its accuracy. By using this feature, the user consents to the storage and processing of their voice data.
+
+4. Collection of Usage Data (Analytics & Tracking)
+- The application uses Google/Firebase Analytics to collect anonymous metrics (usage time, number of sessions, number of "training_start" practice clicks) for the purpose of statistics and improving service quality.
+
+5. Feedback System
+- When using the "Suggestion Box / 問い合わせ" feature, the content of the user's feedback will be recorded.
+- Feedback data is collected ANONYMOUSLY. The system commits to not storing identifying information (User ID) along with the feedback content.
+
+6. Disclaimer
+- The AI pronunciation scoring system is for reference and learning support only, and does not guarantee 100% absolute accuracy compared to native speakers.
+- The service may undergo maintenance, interruption, or feature changes (due to being in the Beta stage) without prior notice.
+
+7. Prohibited Actions
+- It is strictly prohibited to use the recording feature to upload content that is illegal, obscene, or harassing.
+- Attacks or sabotage against the application's servers and database are strictly prohibited.

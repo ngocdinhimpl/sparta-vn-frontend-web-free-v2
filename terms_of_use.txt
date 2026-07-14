@@ -1,0 +1,30 @@
+Dựa vào cấu trúc và chức năng của ứng dụng (Sparta! Vietnamese), dưới đây là bản nháp nội dung Điều khoản sử dụng (Terms of Use / 利用規約) và Chính sách bảo mật (Privacy Policy) mà bạn cần thông báo cho người dùng khi họ đăng ký:
+
+--- ĐIỀU KHOẢN SỬ DỤNG (TERMS OF USE) ---
+
+1. Mục đích của dịch vụ
+Ứng dụng này cung cấp môi trường luyện tập và đánh giá phát âm tiếng Việt dựa trên công nghệ nhận diện giọng nói.
+
+2. Đăng ký tài khoản
+- Người dùng cần cung cấp Tên (Full Name) và Địa chỉ Email hợp lệ để đăng ký tài khoản.
+- Người dùng có trách nhiệm bảo mật thông tin đăng nhập và mật khẩu của mình.
+- Khi đăng ký, người dùng có thể chọn đồng bộ hóa dữ liệu học tập (điểm số, tiến độ) từ máy nội bộ (Local) lên hệ thống lưu trữ đám mây (Cloud).
+
+3. Thu thập và Xử lý dữ liệu Giọng nói (Voice Data)
+- Cốt lõi của dịch vụ là tính năng ghi âm và phân tích phát âm. Khi sử dụng tính năng "Record" (Ghi âm), ứng dụng sẽ thu thập dữ liệu giọng nói của bạn.
+- File ghi âm này sẽ được tải lên máy chủ lưu trữ (Google Drive, Azure) để hệ thống AI/API phân tích và chấm điểm độ chính xác. Bằng việc sử dụng tính năng này, người dùng đồng ý với việc lưu trữ và xử lý dữ liệu giọng nói.
+
+4. Thu thập dữ liệu sử dụng (Analytics & Tracking)
+- Ứng dụng có sử dụng Google/Firebase Analytics để thu thập số liệu ẩn danh (thời gian sử dụng, số phiên, số lượt bấm luyện tập "training_start") nhằm mục đích thống kê và cải thiện chất lượng dịch vụ.
+
+5. Hệ thống phản hồi (Feedback)
+- Khi sử dụng chức năng "Hòm thư góp ý / 問い合わせ", nội dung phản hồi của người dùng sẽ được ghi nhận lại.
+- Dữ liệu phản hồi được thu thập dưới dạng ẨN DANH (Anonymous), hệ thống cam kết không lưu trữ thông tin định danh (User ID) kèm theo nội dung feedback này.
+
+6. Từ chối trách nhiệm (Disclaimer)
+- Hệ thống chấm điểm phát âm bằng AI chỉ mang tính chất tham khảo và hỗ trợ học tập, không đảm bảo tính chính xác tuyệt đối 100% so với người bản xứ.
+- Dịch vụ có thể bảo trì, gián đoạn hoặc thay đổi tính năng (do đang trong giai đoạn Beta) mà không cần báo trước.
+
+7. Các hành vi bị cấm
+- Nghiêm cấm sử dụng tính năng ghi âm để tải lên các nội dung vi phạm pháp luật, đồi trụy hoặc quấy rối.
+- Nghiêm cấm các hành vi tấn công, phá hoại hệ thống máy chủ và database của ứng dụng.

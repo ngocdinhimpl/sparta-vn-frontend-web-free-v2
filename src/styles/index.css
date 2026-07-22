@@ -9,6 +9,11 @@ body {
   background-color: #F8FAFC;
 }
 
+/* Usability - Tap states */
+button, a, [role="button"], input[type="button"], input[type="submit"] {
+  cursor: pointer !important;
+}
+
 /* Glass Card Effect */
 .glass-card {
   background: rgba(255, 255, 255, 0.95);

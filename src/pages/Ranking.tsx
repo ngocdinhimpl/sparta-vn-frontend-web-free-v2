@@ -3,9 +3,13 @@ import { useTranslation } from '@/i18n';
 import { cloudStorageService } from '@/services/cloudStorageService';
 import { RankingRecord } from '@/services/storageService';
 import { getDashboardAvatarsForSet } from '@/constants';
+import { useDashboardAvatar } from '@/hooks/useDashboardAvatar';
+import HappyIcon from '@/assets/common/common-happy.png';
+import AngryIcon from '@/assets/common/common-angry.png';
 
 const Ranking: React.FC = () => {
   const { t } = useTranslation();
+  const { currentLevel } = useDashboardAvatar();
   const [activeTab, setActiveTab] = useState<'level0' | 'level8'>('level8');
   const [rankings, setRankings] = useState<RankingRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,7 +58,7 @@ const Ranking: React.FC = () => {
             activeTab === 'level8' ? 'text-amber-600' : 'text-slate-500 hover:text-slate-700'
           }`}
         >
-          <span className="text-xl mb-1">👑</span>
+          <img src={HappyIcon} className="w-7 h-7 mb-1 drop-shadow-sm" alt="Happy" />
           <span>{t('ranking.tab_hall_of_fame')}</span>
         </button>
         <button
@@ -63,7 +67,7 @@ const Ranking: React.FC = () => {
             activeTab === 'level0' ? 'text-rose-600' : 'text-slate-500 hover:text-slate-700'
           }`}
         >
-          <span className="text-xl mb-1">💀</span>
+          <img src={AngryIcon} className="w-7 h-7 mb-1 drop-shadow-sm" alt="Angry" />
           <span>{t('ranking.tab_abyss')}</span>
         </button>
       </div>
@@ -76,7 +80,6 @@ const Ranking: React.FC = () => {
           </div>
         ) : rankings.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-center p-6">
-            <span className="text-4xl mb-4 opacity-50">👻</span>
             <p className="text-slate-500 font-medium">{t('ranking.empty')}</p>
           </div>
         ) : (
@@ -97,13 +100,24 @@ const Ranking: React.FC = () => {
                   </div>
                   
                   {/* Avatar */}
-                  <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 shadow-sm mx-4 flex-shrink-0">
+                  <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 shadow-sm mx-4 flex-shrink-0 relative">
                     <img 
                       src={avatarImg} 
                       alt="Avatar" 
                       className="w-full h-full object-cover"
                       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
+                    {/* Masking Logic */}
+                    {user.level === 8 && currentLevel !== 8 && (
+                      <div className="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center p-1.5 backdrop-blur-[2px]">
+                        <img src={HappyIcon} alt="Hidden" className="w-full h-full object-contain" />
+                      </div>
+                    )}
+                    {user.level === 0 && currentLevel !== 0 && (
+                      <div className="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center p-1.5 backdrop-blur-[2px]">
+                        <img src={AngryIcon} alt="Hidden" className="w-full h-full object-contain" />
+                      </div>
+                    )}
                   </div>
                   
                   {/* Name and Details */}
@@ -112,7 +126,7 @@ const Ranking: React.FC = () => {
                       {user.rankingName}
                     </h3>
                     <p className="text-sm text-slate-500">
-                      {new Date(user.timestamp).toLocaleDateString()}
+                      {user.stage ? `Stage ${user.stage} • ` : ''}{new Date(user.timestamp).toLocaleDateString()}
                     </p>
                   </div>
                   

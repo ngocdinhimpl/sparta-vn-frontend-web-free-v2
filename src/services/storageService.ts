@@ -50,6 +50,7 @@ export interface RankingRecord {
   rankingName: string;
   level: 0 | 8;
   score: number;
+  stage?: number;
   timestamp: string;
 }
 
@@ -215,20 +216,45 @@ class StorageService {
   /* ===================== VOCABULARY HELPERS ===================== */
 
   async getVocabulary(): Promise<VocabItem[] | null> {
-    // Always try to get from Firebase master vocabulary collection first
-    // This is public data, accessible by all users (logged in or not)
+    // Try to get from Firebase master vocabulary collection first
     try {
       const masterVocab = await cloudStorageService.getMasterVocabulary();
-      // If master vocabulary is empty (not seeded yet), fallback to local
+      let vocabToUse = masterVocab;
+      
+      // If master vocabulary is empty, fallback to local
       if (masterVocab.length === 0) {
         console.warn('Master vocabulary not seeded yet, using local VOCAB_DATA');
-        return this.getPreference<VocabItem[] | null>('vocabulary', null);
+        vocabToUse = await this.getPreference<VocabItem[] | null>('vocabulary', null) || [];
       }
-      return masterVocab;
+      
+      // Always merge the 'stage' property from local VOCAB_DATA 
+      // because Firestore might not be updated with the latest stages
+      if (vocabToUse.length > 0) {
+        const { VOCAB_DATA } = await import('@/constants');
+        return vocabToUse.map(item => {
+          const localMatch = (VOCAB_DATA as VocabItem[]).find(v => v.id === item.id);
+          if (localMatch) {
+            return { ...item, stage: localMatch.stage };
+          }
+          return item;
+        });
+      }
+      return vocabToUse;
     } catch (error) {
       console.error('Error fetching master vocabulary, using local fallback:', error);
-      // Fallback to local on error (offline, Firebase down, etc.)
-      return this.getPreference<VocabItem[] | null>('vocabulary', null);
+      const localVocab = await this.getPreference<VocabItem[] | null>('vocabulary', null);
+      
+      if (localVocab) {
+        const { VOCAB_DATA } = await import('@/constants');
+        return localVocab.map(item => {
+          const localMatch = (VOCAB_DATA as VocabItem[]).find(v => v.id === item.id);
+          if (localMatch) {
+            return { ...item, stage: localMatch.stage };
+          }
+          return item;
+        });
+      }
+      return localVocab;
     }
   }
 
@@ -247,7 +273,38 @@ class StorageService {
     return this.setVocabulary(updatedVocabulary);
   }
 
+  /* ===================== STAGE HELPERS ===================== */
+
+  async getUnlockedStage(): Promise<number> {
+    return this.getPreference<number>('unlocked_stage', 1);
+  }
+
+  async unlockNextStage(): Promise<void> {
+    const current = await this.getUnlockedStage();
+    await this.setPreference('unlocked_stage', current + 1);
+  }
+
   /* ===================== PRONUNCIATION RESULTS HELPERS ===================== */
+
+  async getAllPronunciationResults(): Promise<PronunciationResultRecord[]> {
+    if (this.userId) {
+      return cloudStorageService.getAllPronunciationResults(this.userId);
+    }
+    
+    const db = await this.getDB();
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const request = store.getAll();
+
+    const allPrefs: Preference[] = await new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result || []);
+      request.onerror = () => reject(request.error);
+    });
+
+    return allPrefs
+      .filter(p => p.key.startsWith('pronunciation_'))
+      .map(p => p.value as PronunciationResultRecord);
+  }
 
   async savePronunciationResult(vocab_id: string, response: any): Promise<void> {
     const existing = await this.getPronunciationResult(vocab_id);
@@ -297,7 +354,32 @@ class StorageService {
       console.warn('Failed to update user level:', e);
     }
 
-    return this.setPreference(`pronunciation_${vocab_id}`, record);
+    const saveResult = await this.setPreference(`pronunciation_${vocab_id}`, record);
+
+    // Update progression stage logic
+    try {
+      const vocabulary = await this.getVocabulary() || [];
+      const unlockedStage = await this.getUnlockedStage();
+      const currentVocabItem = vocabulary.find(v => v.id === vocab_id);
+      
+      if (currentVocabItem && currentVocabItem.stage === unlockedStage) {
+        // Count how many items in this stage are completed
+        const allResults = await this.getAllPronunciationResults();
+        const stageItems = vocabulary.filter(v => v.stage === unlockedStage);
+        
+        const completedStageItems = stageItems.filter(item => 
+          allResults.some(res => res.vocab_id === item.id)
+        );
+        
+        if (completedStageItems.length >= 10) {
+          await this.unlockNextStage();
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to process stage unlocking:', e);
+    }
+
+    return saveResult;
   }
 
   async getPronunciationResult(vocab_id: string): Promise<PronunciationResultRecord | null> {

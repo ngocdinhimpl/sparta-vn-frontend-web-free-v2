@@ -41,9 +41,13 @@ const History: React.FC<HistoryProps> = ({ onStartTraining }) => {
       }
 
       const items: HistoryItemData[] = [];
+      const allResults = await storageService.getAllPronunciationResults();
+      
+      // Create a map for quick lookup
+      const resultMap = new Map(allResults.map(r => [r.vocab_id, r]));
       
       for (const vocab of vocabulary) {
-        const result = await storageService.getPronunciationResult(vocab.id);
+        const result = resultMap.get(vocab.id);
         if (result) {
           items.push({
             vocab_id: vocab.id,

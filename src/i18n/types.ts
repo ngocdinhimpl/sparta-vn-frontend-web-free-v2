@@ -55,6 +55,10 @@ export interface Translations {
     stat_minutes: string;
     stat_active: string;
     noWeakSounds: string;
+    backup_prompt_title: string;
+    backup_prompt_desc: string;
+    backup_prompt_login: string;
+    backup_prompt_cancel: string;
   };
   settings: {
     title: string;
@@ -94,6 +98,14 @@ export interface Translations {
     stage2: string;
     stage2WordDesc: string;
     stage2PhraseDesc: string;
+    stage3: string;
+    stage3WordDesc: string;
+    stage3PhraseDesc: string;
+    stage4: string;
+    stage4WordDesc: string;
+    stage4PhraseDesc: string;
+    stage5: string;
+    stage5Desc: string;
   };
   pronunciation: {
     listenCarefully: string;
@@ -177,6 +189,15 @@ export interface Translations {
     submit: string;
     success: string;
     error: string;
+  };
+  tutorial: {
+    slide1_title: string;
+    slide1_desc: string;
+    slide2_title: string;
+    slide2_desc: string;
+    slide3_title: string;
+    slide3_desc: string;
+    next: string;
   };
 }
 

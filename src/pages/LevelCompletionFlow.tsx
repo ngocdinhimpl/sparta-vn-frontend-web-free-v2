@@ -51,6 +51,7 @@ const LevelCompletionFlow: React.FC<LevelCompletionFlowProps> = ({ currentLevel,
       await storageService.updateUserLevel(avatarId, { rankingName: nameToSave });
 
       const actualUserId = userId || 'GUEST_' + Math.random().toString(36).substr(2, 9);
+      const unlockedStage = await storageService.getUnlockedStage();
       
       const record = {
         userId: actualUserId,
@@ -58,6 +59,7 @@ const LevelCompletionFlow: React.FC<LevelCompletionFlowProps> = ({ currentLevel,
         rankingName: nameToSave,
         level: currentLevel,
         score: currentLevelData.lastScore || (currentLevel === 0 ? 0 : 100),
+        stage: unlockedStage,
         timestamp: new Date().toISOString()
       };
 
@@ -140,8 +142,11 @@ const LevelCompletionFlow: React.FC<LevelCompletionFlowProps> = ({ currentLevel,
           <h2 className={`text-2xl font-black mb-2 ${isLevel8 ? 'text-amber-600' : 'text-rose-600'}`}>
             {title}
           </h2>
-          <p className="text-sm font-semibold text-slate-500 mb-6">
+          <p className="text-sm font-semibold text-slate-500 mb-2">
             [{isLevel8 ? '殿堂入り' : '奈落の底'}] {t('dashboard.enter_ranking_name')}
+          </p>
+          <p className="text-xs text-slate-400 mb-6 px-4">
+            ※ここで設定するユーザー名は、アプリでの学習成績により「殿堂入り」(成績優秀)／「奈落の底」(成績不振)のユーザー名として登録されます。
           </p>
 
           <input

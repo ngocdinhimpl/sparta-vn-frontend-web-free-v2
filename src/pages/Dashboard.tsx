@@ -12,6 +12,7 @@ import { User } from 'firebase/auth';
 import DashboardSkeleton from '@/components/skeletons/DashboardSkeleton';
 import { useDashboardAvatar } from '@/hooks/useDashboardAvatar';
 import { useAnimatedNumber } from '@/hooks/useAnimatedNumber';
+import TutorialModal from '@/components/TutorialModal';
 
 interface DashboardProps {
   onStartTraining: () => void;
@@ -28,6 +29,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onStartTraining, onViewAllWeakSou
   const [weakWords, setWeakWords] = useState<Array<{ word: string; accuracy: number; level: 1 | 2 | 3 }>>([]);
   const [shouldAnimateScore, setShouldAnimateScore] = useState(false);
   const [showBackupPrompt, setShowBackupPrompt] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
   
   // Avatar animation hook
   const { currentAvatarImage, currentLevel } = useDashboardAvatar();
@@ -48,6 +50,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onStartTraining, onViewAllWeakSou
       setShowBackupPrompt(true);
     }
     sessionStorage.setItem('dashboard_mounted', 'true');
+
+    if (!localStorage.getItem('has_seen_tutorial')) {
+      setShowTutorial(true);
+    }
 
     const loadStats = async () => {
       setLoading(true); // Show skeleton while loading
@@ -144,36 +150,55 @@ const Dashboard: React.FC<DashboardProps> = ({ onStartTraining, onViewAllWeakSou
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {showTutorial && <TutorialModal onClose={() => setShowTutorial(false)} />}
+      
       {/* Header */}
-      <header className="flex justify-between items-center">
-        <div>
-          <h2 className="text-3xl font-extrabold text-slate-900">{t('dashboard.title')}</h2>
-          {currentUser && (
-            <p className="text-slate-500 font-medium">
-              {t('dashboard.welcome')}, {currentUser.displayName || currentUser.email}
-            </p>
-          )}
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="w-full sm:w-auto flex justify-between items-center sm:block">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('dashboard.title')}</h2>
+            {currentUser && (
+              <p className="text-sm sm:text-base text-slate-500 font-medium">
+                {t('dashboard.welcome')}, {currentUser.displayName || currentUser.email}
+              </p>
+            )}
+          </div>
+          
+          {/* Avatar for mobile only (shown here when stacked) */}
+          <div className="sm:hidden">
+            {currentUser && (
+              <div className="relative group cursor-pointer">
+                <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white text-lg font-black shadow-lg shadow-red-100">
+                  {currentUser.displayName?.charAt(0) || currentUser.email?.charAt(0).toUpperCase()}
+                </div>
+                <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></div>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-3 md:gap-6">
-        <div className="hidden sm:flex flex-col items-end">
-            <div className="flex items-center gap-2 bg-red-50 px-4 py-2 rounded-2xl border border-red-100 shadow-sm">
+
+        <div className="flex w-full sm:w-auto items-center justify-between sm:justify-end gap-3 md:gap-6">
+          <div className="flex flex-col items-start sm:items-end w-full sm:w-auto">
+            <div className="flex items-center gap-2 bg-red-50 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl border border-red-100 shadow-sm w-full sm:w-auto justify-center sm:justify-start">
               <div className="text-red-500">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
               </div>
-              <span className="text-sm font-black text-red-600">Lv.{currentLevel}</span>
+              <span className="text-sm sm:text-base font-black text-red-600">Lv.{currentLevel}</span>
               <span className="text-[9px] font-black text-red-400 uppercase tracking-wider ml-1">Level</span>
             </div>
           </div>
-        {currentUser && (
-          <div className="flex items-center gap-4">
-            <div className="relative group cursor-pointer">
-              <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white text-xl font-black shadow-lg shadow-red-100 group-hover:scale-105 transition-transform">
-                {currentUser.displayName?.charAt(0) || currentUser.email?.charAt(0).toUpperCase()}
+          
+          {/* Avatar for desktop */}
+          {currentUser && (
+            <div className="hidden sm:flex items-center gap-4">
+              <div className="relative group cursor-pointer">
+                <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white text-xl font-black shadow-lg shadow-red-100 group-hover:scale-105 transition-transform">
+                  {currentUser.displayName?.charAt(0) || currentUser.email?.charAt(0).toUpperCase()}
+                </div>
+                <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></div>
               </div>
-              <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></div>
             </div>
-          </div>
-        )}
+          )}
         </div>
       </header>
 
@@ -331,11 +356,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onStartTraining, onViewAllWeakSou
             </div>
             
             <h3 className="text-xl font-bold text-slate-900 text-center mb-4">
-              学習データをバックアップしましょう！
+              {t('dashboard.backup_prompt_title')}
             </h3>
             
             <p className="text-sm text-slate-500 leading-relaxed text-center mb-8">
-              現在の学習記録はご利用の端末にのみ保存されています。アカウントを登録してデータを同期すると、機種変更時やキャッシュクリア時でも安心です。
+              {t('dashboard.backup_prompt_desc')}
             </p>
             
             <div className="flex flex-col gap-3">
@@ -346,13 +371,13 @@ const Dashboard: React.FC<DashboardProps> = ({ onStartTraining, onViewAllWeakSou
                 }}
                 className="w-full py-4 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold transition-colors shadow-lg shadow-red-200"
               >
-                無料登録 / ログイン
+                {t('dashboard.backup_prompt_login')}
               </button>
               <button 
                 onClick={() => setShowBackupPrompt(false)}
                 className="w-full py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-bold transition-colors"
               >
-                今はしない
+                {t('dashboard.backup_prompt_cancel')}
               </button>
             </div>
           </div>

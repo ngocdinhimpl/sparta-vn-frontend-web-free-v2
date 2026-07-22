@@ -107,7 +107,7 @@ export const ja: Translations = {
     stage4WordDesc: 'より広い文脈で使える応用的な語彙 2',
     stage4PhraseDesc: 'より複雑な表現やフレーズ 2',
     stage5: 'ステージ 5',
-    stage5Desc: '作成中 (Coming Soon)',
+    stage5Desc: '作成中',
   },
   pronunciation: {
     listenCarefully: '注意深く聞いてください',

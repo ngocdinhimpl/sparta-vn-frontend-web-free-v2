@@ -15,14 +15,6 @@ class AudioRecordingService {
   private stream: MediaStream | null = null;
   private WAV_SAMPLE_RATE = 16000; // Expected by Azure/Server
 
-  // Silence Detection
-  private audioContext: AudioContext | null = null;
-  private analyser: AnalyserNode | null = null;
-  private silenceTimer: number | null = null;
-  private onSilenceDetected: (() => void) | null = null;
-  private SILENCE_THRESHOLD = 0.01; // Reverted to original value for testing
-  private SILENCE_DURATION = 1500; // 1.5 seconds
-
   private currentAudio: HTMLAudioElement | null = null;
   private currentAudioUrl: string | null = null;
 
@@ -93,66 +85,11 @@ class AudioRecordingService {
       }
     };
 
-    if (this.onSilenceDetected) {
-      this.setupSilenceDetection();
-    }
-
     this.mediaRecorder.start(100);
     console.log('⏺️ Recording started');
   }
 
-  private setupSilenceDetection() {
-    if (!this.stream) return;
 
-    this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const source = this.audioContext.createMediaStreamSource(this.stream);
-    this.analyser = this.audioContext.createAnalyser();
-    this.analyser.fftSize = 256;
-    source.connect(this.analyser);
-
-    const bufferLength = this.analyser.frequencyBinCount;
-    const dataArray = new Float32Array(bufferLength);
-
-    let lastTimeSpeaking = Date.now();
-    let hasSpoken = false;
-
-    const checkSilence = () => {
-      if (!this.analyser || !this.mediaRecorder || this.mediaRecorder.state !== 'recording') {
-        return;
-      }
-
-      this.analyser.getFloatTimeDomainData(dataArray);
-      
-      // Calculate RMS (Root Mean Square) for volume level
-      let sum = 0;
-      for (let i = 0; i < bufferLength; i++) {
-        sum += dataArray[i] * dataArray[i];
-      }
-      const rms = Math.sqrt(sum / bufferLength);
-
-      // Periodically log volume for calibration if needed
-      if (Math.random() < 0.05) { // Log ~5% of frames to avoid console flooding
-        console.log(`🎤 Current Volume (RMS): ${rms.toFixed(4)} (Threshold: ${this.SILENCE_THRESHOLD})`);
-      }
-
-      if (rms > this.SILENCE_THRESHOLD) {
-        lastTimeSpeaking = Date.now();
-        hasSpoken = true;
-      } else if (hasSpoken && (Date.now() - lastTimeSpeaking > this.SILENCE_DURATION)) {
-        console.log('🤫 Silence detected, auto-stopping...');
-        this.onSilenceDetected?.();
-        return;
-      }
-
-      requestAnimationFrame(checkSilence);
-    };
-
-    requestAnimationFrame(checkSilence);
-  }
-
-  setSilenceCallback(callback: (() => void) | null) {
-    this.onSilenceDetected = callback;
-  }
 
   stopRecording(id: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -202,12 +139,6 @@ class AudioRecordingService {
         // cleanup
         this.audioChunks = [];
         this.mediaRecorder = null;
-
-        if (this.audioContext) {
-          this.audioContext.close();
-          this.audioContext = null;
-        }
-        this.analyser = null;
 
         if (this.stream) {
           this.stream.getTracks().forEach(t => t.stop());

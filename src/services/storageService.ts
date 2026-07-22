@@ -162,6 +162,10 @@ class StorageService {
     this.userId = userId;
   }
 
+  getUserId(): string | null {
+    return this.userId;
+  }
+
   async syncToCloud(): Promise<void> {
     if (!this.userId) return;
 

@@ -50,17 +50,9 @@ const PronunciationDetail: React.FC<PronunciationDetailProps> = ({
 
     checkRecording();
 
-    // Set silence callback
-    audioRecordingService.setSilenceCallback(() => {
-      if (mountedRef.current && stopRecordingHandlerRef.current) {
-        stopRecordingHandlerRef.current(true);
-      }
-    });
-
     return () => {
       mountedRef.current = false;
       audioRecordingService.stopPlayback();
-      audioRecordingService.setSilenceCallback(null);
     };
   }, [recordingId]);
 
@@ -125,7 +117,7 @@ const PronunciationDetail: React.FC<PronunciationDetailProps> = ({
 
   const toggleRecording = () => {
     if (isRecording) {
-      handleStopRecording();
+      handleStopRecording(true);
     } else {
       startRecording();
     }

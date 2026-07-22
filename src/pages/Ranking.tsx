@@ -1,18 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/i18n';
 import { cloudStorageService } from '@/services/cloudStorageService';
-import { RankingRecord } from '@/services/storageService';
-import { getDashboardAvatarsForSet } from '@/constants';
-import { useDashboardAvatar } from '@/hooks/useDashboardAvatar';
+import { RankingRecord, storageService } from '@/services/storageService';
+import { getDashboardAvatarsForSet, AVAILABLE_AVATARS } from '@/constants';
 import HappyIcon from '@/assets/common/common-happy.png';
 import AngryIcon from '@/assets/common/common-angry.png';
 
 const Ranking: React.FC = () => {
   const { t } = useTranslation();
-  const { currentLevel } = useDashboardAvatar();
   const [activeTab, setActiveTab] = useState<'level0' | 'level8'>('level8');
   const [rankings, setRankings] = useState<RankingRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [localRankingNames, setLocalRankingNames] = useState<Record<string, string>>({});
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchLocalData = async () => {
+      const names: Record<string, string> = {};
+      for (const avatar of AVAILABLE_AVATARS) {
+        const levelData = await storageService.getUserLevel(avatar.id);
+        if (levelData.rankingName) {
+          names[avatar.id] = levelData.rankingName;
+        }
+      }
+      setLocalRankingNames(names);
+      setCurrentUserId(storageService.getUserId());
+    };
+    fetchLocalData();
+  }, []);
 
   // Fetch rankings when tab changes
   useEffect(() => {
@@ -107,13 +122,13 @@ const Ranking: React.FC = () => {
                       className="w-full h-full object-cover"
                       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
-                    {/* Masking Logic */}
-                    {user.level === 8 && currentLevel !== 8 && (
+                    {/* Masking Logic: Only unmask if it is the current user */}
+                    {user.level === 8 && !(currentUserId === user.userId || localRankingNames[user.avatarId] === user.rankingName) && (
                       <div className="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center p-1.5 backdrop-blur-[2px]">
                         <img src={HappyIcon} alt="Hidden" className="w-full h-full object-contain" />
                       </div>
                     )}
-                    {user.level === 0 && currentLevel !== 0 && (
+                    {user.level === 0 && !(currentUserId === user.userId || localRankingNames[user.avatarId] === user.rankingName) && (
                       <div className="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center p-1.5 backdrop-blur-[2px]">
                         <img src={AngryIcon} alt="Hidden" className="w-full h-full object-contain" />
                       </div>

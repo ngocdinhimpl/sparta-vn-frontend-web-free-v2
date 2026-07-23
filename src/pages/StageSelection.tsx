@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/i18n';
 import { VocabType, storageService } from '@/services/storageService';
+import { VOCAB_DATA } from '@/constants';
 
 interface StageNodeProps {
   stage: number;
@@ -10,9 +11,10 @@ interface StageNodeProps {
   isComingSoon?: boolean;
   onSelect?: () => void;
   isLast?: boolean;
+  averageScore?: number;
 }
 
-const StageNode: React.FC<StageNodeProps> = ({ stage, title, description, isUnlocked, isComingSoon, onSelect, isLast }) => {
+const StageNode: React.FC<StageNodeProps> = ({ stage, title, description, isUnlocked, isComingSoon, onSelect, isLast, averageScore }) => {
   const { t } = useTranslation();
   
   return (
@@ -56,6 +58,14 @@ const StageNode: React.FC<StageNodeProps> = ({ stage, title, description, isUnlo
           {description}
         </p>
         
+        {isUnlocked && !isComingSoon && averageScore !== undefined && (
+          <div className="mt-2 flex flex-col items-center">
+            <div className="text-sm font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+              {t('training.avg_score_label')}: <span className={averageScore >= 60 ? 'text-emerald-500' : 'text-amber-500'}>{averageScore}</span>
+            </div>
+          </div>
+        )}
+        
         {isUnlocked && !isComingSoon && (
           <button className="mt-4 px-6 py-2 bg-red-100 text-red-600 rounded-full font-bold text-sm flex items-center gap-2 hover:bg-red-200 transition-colors">
             {t('common.start')}
@@ -79,14 +89,43 @@ const StageSelection: React.FC<StageSelectionProps> = ({ vocabType, onSelect, on
   const typeTextFormatted = typeText.toLowerCase();
   
   const [unlockedStage, setUnlockedStage] = useState<number>(1);
+  const [stageAverages, setStageAverages] = useState<Record<number, number>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    storageService.getUnlockedStage().then(stage => {
+    const loadData = async () => {
+      const stage = await storageService.getUnlockedStage();
       setUnlockedStage(stage);
+      
+      // Calculate averages for each stage
+      const allResults = await storageService.getAllPronunciationResults();
+      const averages: Record<number, number> = {};
+      
+      for (let s = 1; s <= 4; s++) {
+        const stageItems = VOCAB_DATA.filter(v => v.type === vocabType && v.stage === s);
+        if (stageItems.length > 0) {
+          let totalScore = 0;
+          let completedCount = 0;
+          
+          for (const item of stageItems) {
+            const res = allResults.find(r => r.vocab_id === item.id);
+            if (res) {
+              completedCount++;
+              totalScore += res.averageOverallScore || 0;
+            }
+          }
+          
+          // Calculate average against total items in stage, or just completed items?
+          // "tổng điểm chia cho số lượng bài trong stage"
+          averages[s] = Math.round(totalScore / stageItems.length) || 0;
+        }
+      }
+      setStageAverages(averages);
       setLoading(false);
-    });
-  }, []);
+    };
+    
+    loadData();
+  }, [vocabType]);
 
   if (loading) {
     return <div className="flex justify-center p-20"><div className="w-10 h-10 border-4 border-slate-200 border-t-red-500 rounded-full animate-spin"></div></div>;
@@ -126,9 +165,14 @@ const StageSelection: React.FC<StageSelectionProps> = ({ vocabType, onSelect, on
         </button>
         <h2 className="text-3xl font-extrabold text-slate-900">{t('training.selectStage')}</h2>
       </div>
-      <p className="text-slate-500 font-medium px-2 mb-10 pb-4 text-center md:text-left">
-        {t('training.selectStageDesc').replace('{mode}', typeTextFormatted)}
-      </p>
+      <div className="flex flex-col px-2 mb-10 pb-4 text-center md:text-left">
+        <p className="text-slate-500 font-medium">
+          {t('training.selectStageDesc').replace('{mode}', typeTextFormatted)}
+        </p>
+        <p className="text-rose-500 text-sm font-bold mt-2">
+          {t('training.unlock_warning')}
+        </p>
+      </div>
 
       {/* Roadmap Container */}
       <div className="flex flex-col items-center gap-12 py-8 relative w-full">
@@ -139,6 +183,7 @@ const StageSelection: React.FC<StageSelectionProps> = ({ vocabType, onSelect, on
             title={s.title}
             description={s.description || ''}
             isUnlocked={s.stage <= unlockedStage}
+            averageScore={stageAverages[s.stage]}
             onSelect={() => onSelect(s.stage)}
           />
         ))}

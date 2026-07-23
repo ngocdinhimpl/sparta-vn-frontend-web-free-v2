@@ -107,6 +107,8 @@ export interface Translations {
     stage4PhraseDesc: string;
     stage5: string;
     stage5Desc: string;
+    unlock_warning: string;
+    avg_score_label: string;
   };
   pronunciation: {
     listenCarefully: string;

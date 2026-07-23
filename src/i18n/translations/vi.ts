@@ -109,6 +109,8 @@ export const vi: Translations = {
     stage4PhraseDesc: 'Biểu thức trôi chảy như người bản xứ.',
     stage5: 'Vòng 5',
     stage5Desc: 'Sắp ra mắt',
+    unlock_warning: '* Cần đạt điểm trung bình 60 trở lên để mở khóa vòng tiếp theo',
+    avg_score_label: 'Điểm TB',
   },
   pronunciation: {
     listenCarefully: 'Lắng nghe cẩn thận',

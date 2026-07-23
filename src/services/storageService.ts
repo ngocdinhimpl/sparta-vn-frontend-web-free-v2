@@ -367,16 +367,25 @@ class StorageService {
       const currentVocabItem = vocabulary.find(v => v.id === vocab_id);
       
       if (currentVocabItem && currentVocabItem.stage === unlockedStage) {
-        // Count how many items in this stage are completed
+        // Count how many items in this stage and of the same type are completed
         const allResults = await this.getAllPronunciationResults();
-        const stageItems = vocabulary.filter(v => v.stage === unlockedStage);
+        const stageItems = vocabulary.filter(v => v.stage === unlockedStage && v.type === currentVocabItem.type);
         
         const completedStageItems = stageItems.filter(item => 
           allResults.some(res => res.vocab_id === item.id)
         );
         
         if (completedStageItems.length >= 10) {
-          await this.unlockNextStage();
+          let totalScore = 0;
+          for (const item of completedStageItems) {
+            const res = allResults.find(r => r.vocab_id === item.id);
+            totalScore += res?.averageOverallScore || 0;
+          }
+          const averageScore = totalScore / completedStageItems.length;
+
+          if (averageScore >= 60) {
+            await this.unlockNextStage();
+          }
         }
       }
     } catch (e) {

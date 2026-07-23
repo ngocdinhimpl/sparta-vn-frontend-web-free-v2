@@ -109,6 +109,8 @@ export const en: Translations = {
     stage4PhraseDesc: 'Native-like fluency expressions.',
     stage5: 'Stage 5',
     stage5Desc: 'Coming Soon',
+    unlock_warning: '* Average score of 60 or above is required to unlock the next stage',
+    avg_score_label: 'Avg Score',
   },
   pronunciation: {
     listenCarefully: 'Listen carefully',

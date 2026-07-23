@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from '@/i18n';
+import logoImg from '@/assets/logo/logo.png';
 
 interface TutorialModalProps {
   onClose: () => void;
@@ -15,21 +16,21 @@ const TutorialModal: React.FC<TutorialModalProps> = ({ onClose }) => {
       title: t('tutorial.slide1_title'),
       description: t('tutorial.slide1_desc'),
       icon: (
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <img src={logoImg} alt="Sparta Logo" className="w-16 h-16 object-contain drop-shadow-md" />
       )
     },
     {
       title: t('tutorial.slide2_title'),
       description: t('tutorial.slide2_desc'),
       icon: (
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <img src={logoImg} alt="Sparta Logo" className="w-16 h-16 object-contain drop-shadow-md" />
       )
     },
     {
       title: t('tutorial.slide3_title'),
       description: t('tutorial.slide3_desc'),
       icon: (
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+        <img src={logoImg} alt="Sparta Logo" className="w-16 h-16 object-contain drop-shadow-md" />
       )
     }
   ];

@@ -106,9 +106,11 @@ export const ja: Translations = {
     stage3PhraseDesc: 'より複雑な表現やフレーズ 1',
     stage4: 'ステージ 4',
     stage4WordDesc: 'より広い文脈で使える応用的な語彙 2',
-    stage4PhraseDesc: 'より複雑な表現やフレーズ 2',
+    stage4PhraseDesc: 'ネイティブレベルの流暢な表現。',
     stage5: 'ステージ 5',
-    stage5Desc: '作成中',
+    stage5Desc: '近日公開',
+    unlock_warning: '* 次のステージを解放するには、平均スコア60以上が必要です',
+    avg_score_label: '平均スコア',
   },
   pronunciation: {
     listenCarefully: '注意深く聞いてください',

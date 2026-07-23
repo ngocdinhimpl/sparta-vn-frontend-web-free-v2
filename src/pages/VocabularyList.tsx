@@ -41,10 +41,12 @@ const VocabularyList: React.FC<VocabularyListProps> = ({ vocabType, stage, onBac
         onItemsLoaded(filtered);
       }
       
-      // Check completion status for each item
+      // Check completion status using allResults to avoid N+1 queries
       const completedSet = new Set<string>();
+      const allResults = await storageService.getAllPronunciationResults();
+      
       for (const item of filtered) {
-        const isCompleted = await storageService.isVocabCompleted(item.id);
+        const isCompleted = allResults.some(r => r.vocab_id === item.id);
         if (isCompleted) {
           completedSet.add(item.id);
         }

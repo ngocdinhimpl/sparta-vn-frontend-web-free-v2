@@ -9,7 +9,7 @@ const DB_NAME = 'SpartaPreferencesDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'preferences';
 
-export type Language = 'ja' | 'en';
+export type Language = 'ja' | 'en' | 'vi';
 export type VocabType = 'word' | 'phrase';
 
 export interface VocabItem {

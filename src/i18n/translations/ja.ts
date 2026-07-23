@@ -70,8 +70,9 @@ export const ja: Translations = {
     selectLanguage: '言語を選択',
     japanese: '日本語 (JP)',
     english: '英語 (EN)',
-    change_avatar: 'アバター変更',
-    customize_appearance: 'コンパニオンをカスタマイズ',
+    vietnamese: 'ベトナム語 (VI)',
+    change_avatar: 'アバターを変更',
+    customize_appearance: 'パートナーをカスタマイズする',
   },
   training: {
     title: 'トレーニングモード',

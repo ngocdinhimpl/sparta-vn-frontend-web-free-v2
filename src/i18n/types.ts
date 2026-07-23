@@ -68,6 +68,7 @@ export interface Translations {
     selectLanguage: string;
     japanese: string;
     english: string;
+    vietnamese: string;
     change_avatar: string;
     customize_appearance: string;
   };

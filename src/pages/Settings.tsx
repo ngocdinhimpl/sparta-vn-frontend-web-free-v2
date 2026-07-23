@@ -51,7 +51,7 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
     }
   };
 
-  const languageDisplay = language === 'ja' ? t('settings.japanese') : t('settings.english');
+  const languageDisplay = language === 'ja' ? t('settings.japanese') : language === 'en' ? t('settings.english') : t('settings.vietnamese');
 
   const resetAppText = language === 'ja' ? 'リセット' : 'Reset App';
   const resetConfirmTitle = language === 'ja' ? 'リセットの確認' : 'Confirm Reset';
@@ -235,6 +235,29 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
                   </div>
                 </div>
                 {language === 'en' && (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-red-500">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                )}
+              </button>
+
+              {/* Vietnamese Option */}
+              <button
+                onClick={() => handleLanguageSelect('vi')}
+                className={`w-full flex items-center justify-between p-4 rounded-xl transition-all ${
+                  language === 'vi' 
+                    ? 'bg-red-50 border-2 border-red-500' 
+                    : 'bg-slate-50 border-2 border-transparent hover:border-slate-200'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🇻🇳</span>
+                  <div className="text-left">
+                    <div className="font-bold text-slate-800">{t('settings.vietnamese')}</div>
+                    <div className="text-xs text-slate-500">Tiếng Việt</div>
+                  </div>
+                </div>
+                {language === 'vi' && (
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-red-500">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>

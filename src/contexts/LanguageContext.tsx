@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, Rea
 import { storageService, Language } from '@/services/storageService';
 import { ja } from '../i18n/translations/ja';
 import { en } from '../i18n/translations/en';
+import { vi } from '../i18n/translations/vi';
 import { Translations } from '../i18n/types';
 
 interface LanguageContextType {
@@ -19,6 +20,7 @@ interface LanguageProviderProps {
 const translationsMap: Record<Language, Translations> = {
   ja,
   en,
+  vi,
 };
 
 export function LanguageProvider({ children }: LanguageProviderProps) {

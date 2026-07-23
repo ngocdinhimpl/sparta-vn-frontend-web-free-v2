@@ -70,6 +70,7 @@ export const en: Translations = {
     selectLanguage: 'Select Language',
     japanese: 'Japanese (JP)',
     english: 'English (EN)',
+    vietnamese: 'Vietnamese (VI)',
     change_avatar: 'Change Avatar',
     customize_appearance: 'Customize your companion',
   },

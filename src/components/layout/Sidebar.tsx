@@ -24,8 +24,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
   return (
     <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 h-full p-6">
       <div className="flex items-center gap-3 mb-10 px-2">
-        <img src={logo} alt="Sparta Logo" className="w-10 h-10 object-contain rounded-xl" />
-        <h1 className="text-xl font-bold text-slate-900 tracking-tight">Sparta</h1>
+        <img src={logo} alt="Sparta Logo" className="w-14 h-15 object-contain rounded-xl" />
+        <h1 className="text-lg font-bold text-slate-900 tracking-tight leading-tight">スパルタ！発音☆ベトナム語</h1>
       </div>
 
       <nav className="flex-1 space-y-1">

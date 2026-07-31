@@ -9,6 +9,7 @@ import { getCoachAvatar } from '@/constants';
 import { useTranslation } from '@/i18n';
 import { auth } from '@/services/firebase';
 import { storageService } from '@/services/storageService';
+import logo from '@/assets/logo/logo.png';
 
 interface PronunciationResultProps {
   item: any;
@@ -53,10 +54,48 @@ const PronunciationResult: React.FC<PronunciationResultProps> = ({
   const [highlightedWordIndex, setHighlightedWordIndex] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
   const [averageScore, setAverageScore] = useState<number | null>(null);
+  const [stageAvgScore, setStageAvgScore] = useState<number | null>(null);
+  const [showDialog, setShowDialog] = useState(false);
 
   React.useEffect(() => {
     controller.setInitialMood(initialMood);
   }, [initialMood, controller]);
+
+  React.useEffect(() => {
+    if (isLastItem && item?.stage) {
+      const getStageAvg = async () => {
+        try {
+          const vocab = await storageService.getVocabulary();
+          const results = await storageService.getAllPronunciationResults();
+          
+          const stageItems = vocab?.filter(v => v.stage === item.stage && v.type === item.type) || [];
+          if (stageItems.length > 0) {
+            let total = 0;
+            let count = 0;
+            for (const si of stageItems) {
+              const r = results.find(res => res.vocab_id === si.id);
+              if (r && r.averageOverallScore !== undefined) {
+                total += r.averageOverallScore;
+                count++;
+              }
+            }
+            // Include the current score if it's not in the DB yet, though it should be saved by now
+            // since the save happens in PronunciationDetail before continuing here.
+            if (count > 0) {
+              setStageAvgScore(total / count);
+            } else {
+              setStageAvgScore(overallScore);
+            }
+          } else {
+            setStageAvgScore(overallScore);
+          }
+        } catch (e) {
+          console.error("Failed to get stage average:", e);
+        }
+      };
+      getStageAvg();
+    }
+  }, [isLastItem, item]);
 
   // Fetch pronunciation result data (works for both logged-in and guest users)
   React.useEffect(() => {
@@ -300,22 +339,51 @@ const PronunciationResult: React.FC<PronunciationResultProps> = ({
         </p>
       </div>
 
-      <button 
-        onClick={onContinue}
-        className="w-full py-5 bg-red-500 text-white rounded-2xl font-bold text-xl flex items-center justify-center gap-3 hover:bg-red-600 transition-all shadow-xl shadow-red-100 active:scale-[0.98]"
-      >
-        {isLastItem ? t('common.finish') : t('common.continue')}
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-          {isLastItem ? (
-            <polyline points="20 6 9 17 4 12"/>
-          ) : (
-            <>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-              <polyline points="12 5 19 12 12 19"/>
-            </>
+      {isLastItem ? (
+        <>
+          <button 
+            onClick={() => setShowDialog(true)}
+            className="w-full py-5 bg-red-500 text-white rounded-2xl font-bold text-xl flex items-center justify-center gap-3 hover:bg-red-600 transition-all shadow-xl shadow-red-100 active:scale-[0.98]"
+          >
+            {t('common.continue')}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+          </button>
+
+          {showDialog && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+              <div className="bg-white rounded-[2.5rem] p-8 max-w-sm w-full flex flex-col items-center text-center shadow-2xl animate-in zoom-in-95 duration-500">
+                <img src={logo} alt="Logo" className="w-24 h-24 object-contain rounded-2xl mb-6 shadow-sm" />
+                <p className="text-xl font-bold text-slate-800 mb-8 leading-relaxed">
+                  {(stageAvgScore ?? overallScore) >= 60 
+                    ? `よくやった！ステージ${item?.stage || 1}合格、次のステージへ進んでよい`
+                    : `ダメだ！ステージ${item?.stage || 1}はやり直しだ。ガンバリ給え`
+                  }
+                </p>
+                <button 
+                  onClick={onContinue}
+                  className="w-full py-4 bg-red-500 text-white rounded-2xl font-bold text-xl hover:bg-red-600 transition-all shadow-xl shadow-red-100 active:scale-[0.98]"
+                >
+                  OK!
+                </button>
+              </div>
+            </div>
           )}
-        </svg>
-      </button>
+        </>
+      ) : (
+        <button 
+          onClick={onContinue}
+          className="w-full py-5 bg-red-500 text-white rounded-2xl font-bold text-xl flex items-center justify-center gap-3 hover:bg-red-600 transition-all shadow-xl shadow-red-100 active:scale-[0.98]"
+        >
+          {t('common.continue')}
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      )}
     </div>
   );
 };

@@ -162,7 +162,7 @@ const App: React.FC = () => {
 
     if (isLast) {
       setPronunciationResult(null);
-      setLessonFlow(LessonFlow.VOCAB);
+      setLessonFlow(LessonFlow.STAGES);
       return;
     }
 

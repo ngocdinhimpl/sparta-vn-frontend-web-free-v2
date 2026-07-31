@@ -59,7 +59,7 @@ const TutorialModal: React.FC<TutorialModalProps> = ({ onClose }) => {
           {slides[currentSlide].title}
         </h3>
         
-        <p className="text-slate-500 font-medium leading-relaxed mb-8 min-h-[80px]">
+        <p className="text-slate-500 font-medium leading-relaxed mb-8 min-h-[80px] whitespace-pre-line">
           {slides[currentSlide].description}
         </p>
 

@@ -196,12 +196,12 @@ export const vi: Translations = {
     error: 'Không thể gửi góp ý. Vui lòng thử lại sau.',
   },
   tutorial: {
-    slide1_title: 'Chào mừng đến Sparta!',
-    slide1_desc: 'Luyện phát âm tiếng Việt với phản hồi từ AI.',
-    slide2_title: 'Tiến trình vòng',
-    slide2_desc: 'Bắt đầu từ Vòng 1. Hoàn thành 10 bài tập để mở khóa vòng tiếp theo. Bạn có thể vượt qua tất cả?',
-    slide3_title: 'Ngôi đền danh vọng & Vực thẳm',
-    slide3_desc: 'Đạt trên 95 điểm liên tục để vào Ngôi đền danh vọng. Tránh điểm dưới 10 nếu không sẽ bị đày xuống Vực thẳm!',
+    slide1_title: 'Chào mừng đến với 【Sparta! Phát âm☆Tiếng Việt】!',
+    slide1_desc: 'Avatar bạn đã chọn sẽ kiểm tra phát âm của bạn một cách nghiêm ngặt từ bây giờ.',
+    slide2_title: 'Chỉ dẫn của Sparta!',
+    slide2_desc: 'Bắt đầu từ Cấp độ 1.\nMỗi cấp độ có 10 từ/cụm từ được chuẩn bị sẵn.\nHoàn thành huấn luyện phát âm và tiến tới cấp độ tiếp theo để có thể luyện tập các từ mới.',
+    slide3_title: '【Đại Sảnh Danh Vọng】 và 【Vực Thẳm】',
+    slide3_desc: 'Hãy lặp lại việc huấn luyện phát âm.\nKhi phát âm của bạn tốt lên, avatar của bạn sẽ dần trở nên vui vẻ hơn. Nếu bạn tiếp tục duy trì và niềm vui đạt đến mức tối đa, bạn sẽ bước vào "Đại Sảnh Danh Vọng". Nếu phát âm kém kéo dài, avatar của bạn sẽ trở nên khó chịu và cuối cùng sẽ rơi xuống "Vực Thẳm".\nAvatar hiện tại kết thúc... Hãy thay đổi avatar và thử lại!',
     next: 'Tiếp theo',
   }
 };

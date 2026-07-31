@@ -196,12 +196,12 @@ export const en: Translations = {
     error: 'Failed to send feedback. Please try again later.',
   },
   tutorial: {
-    slide1_title: 'Welcome to Sparta!',
-    slide1_desc: 'Train your Vietnamese pronunciation with AI-powered feedback.',
-    slide2_title: 'Stage Progression',
-    slide2_desc: 'Start from Stage 1. Complete 10 exercises to unlock the next stage. Can you master them all?',
-    slide3_title: 'Hall of Fame & Abyss',
-    slide3_desc: 'Score above 95 points consistently to enter the Hall of Fame. Avoid scoring below 10 or face the Abyss!',
+    slide1_title: 'Welcome to 【Sparta! Pronunciation☆Vietnamese】!',
+    slide1_desc: 'The avatar you set will strictly check your pronunciation from now on.',
+    slide2_title: 'Sparta! Guidepost',
+    slide2_desc: 'Start from Stage 1.\nEach stage has 10 words/phrases prepared.\nComplete the pronunciation training and proceed to the next stage where you can train on new words.',
+    slide3_title: '【Hall of Fame】 and 【Abyss】',
+    slide3_desc: 'Please repeat the pronunciation training.\nAs your pronunciation improves, your avatar will gradually become happier. If you continue further and the happiness reaches its maximum, you will enter the "Hall of Fame". If poor pronunciation continues, your avatar will become in a bad mood and eventually fall into the "Abyss".\nThe current avatar ends... Change your avatar and try again!',
     next: 'Next',
   }
 };

@@ -151,9 +151,16 @@ class StorageService {
   }
 
   async clearAllPreferences(): Promise<void> {
-    const db = await this.getDB();
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    tx.objectStore(STORE_NAME).clear();
+    if (this.db) {
+      this.db.close();
+      this.db = null;
+    }
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.deleteDatabase(DB_NAME);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+      req.onblocked = () => resolve();
+    });
   }
 
   /* ===================== CLOUD HELPERS ===================== */
@@ -332,9 +339,8 @@ class StorageService {
       updated_at: new Date().toISOString(),
     };
 
-    if (this.userId) {
-      await cloudStorageService.savePronunciationResult(this.userId, vocab_id, record);
-    }
+    // The backend now securely saves the pronunciation_result to Firestore.
+    // We only need to compute the local user level progression for UI purposes.
 
     // Update user level based on this score
     try {

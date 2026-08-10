@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Icons } from '@/constants';
 import { useTranslation } from '@/i18n';
 import { auth } from '@/services/firebase';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile, EmailAuthProvider, linkWithCredential } from 'firebase/auth';
 import { useToast } from '@/contexts/ToastContext';
 import { useLoading } from '@/contexts/LoadingContext';
 import { storageService } from '@/services/storageService';
@@ -39,30 +39,23 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSignInClick, onBack }
 
     showLoading(t('common.loading'));
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      let user = auth.currentUser;
+      
+      if (user && user.isAnonymous) {
+        // Upgrade the anonymous user to a permanent account!
+        const credential = EmailAuthProvider.credential(email, password);
+        const userCredential = await linkWithCredential(user, credential);
+        user = userCredential.user;
+      } else {
+        // Fallback just in case they aren't anonymous for some reason
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        user = userCredential.user;
+      }
 
       // Update display name
       await updateProfile(user, { displayName: fullName });
 
       showToast('Account created successfully!', 'success');
-
-      // Ask for sync
-      const shouldSync = window.confirm('Would you like to sync your local data to the cloud?');
-      if (shouldSync) {
-        showLoading('Syncing data...');
-        storageService.setUserId(user.uid);
-        
-        // Sync text data
-        await storageService.syncToCloud();
-        
-        // Recordings are not synced to cloud here out-of-the-box in this version
-        showToast('Data synced successfully!', 'success');
-      }
-
-      // Wipe local data so we strictly use Firebase data as requested
-      await storageService.clearAllPreferences();
-      await audioRecordingService.clearAllRecordings();
 
       onRegister();
     } catch (error: any) {

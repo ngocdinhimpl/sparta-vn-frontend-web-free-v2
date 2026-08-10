@@ -16,6 +16,7 @@ export const vi: Translations = {
     months: 'tháng',
     finish: 'Hoàn thành',
     backToList: 'Trở về danh sách',
+    guest: 'Khách',
   },
   nav: {
     home: 'Trang chủ',
@@ -73,6 +74,12 @@ export const vi: Translations = {
     vietnamese: 'Tiếng Việt (VI)',
     change_avatar: 'Đổi Avatar',
     customize_appearance: 'Tùy chỉnh diện mạo',
+    resetApp: 'Thiết lập lại ứng dụng',
+    resetConfirmTitle: 'Xác nhận thiết lập lại',
+    resetConfirmMessage: 'Tất cả dữ liệu học tập sẽ bị xóa. Bạn có chắc chắn không?',
+    resetting: 'Đang thiết lập lại...',
+    logout: 'Đăng xuất',
+    logout_success: 'Đăng xuất thành công',
   },
   training: {
     title: 'Chế độ luyện tập',

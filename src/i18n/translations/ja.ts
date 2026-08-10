@@ -16,6 +16,7 @@ export const ja: Translations = {
     months: '月',
     finish: '終了',
     backToList: 'リストに戻る',
+    guest: 'ゲスト'
   },
   nav: {
     home: 'ホーム',
@@ -73,6 +74,12 @@ export const ja: Translations = {
     vietnamese: 'ベトナム語 (VI)',
     change_avatar: 'アバターを変更',
     customize_appearance: 'パートナーをカスタマイズする',
+    resetApp: 'アプリをリセット',
+    resetConfirmTitle: 'リセットの確認',
+    resetConfirmMessage: '学習データはすべて削除されます。本当によろしいですか？',
+    resetting: 'リセット中...',
+    logout: 'ログアウト',
+    logout_success: 'ログアウトしました',
   },
   training: {
     title: 'トレーニングモード',

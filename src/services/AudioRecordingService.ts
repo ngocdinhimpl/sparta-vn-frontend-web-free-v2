@@ -357,9 +357,16 @@ class AudioRecordingService {
   }
 
   async clearAllRecordings(): Promise<void> {
-    const db = await this.getDB();
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    tx.objectStore(STORE_NAME).clear();
+    if (this.db) {
+      this.db.close();
+      this.db = null;
+    }
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.deleteDatabase(DB_NAME);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+      req.onblocked = () => resolve();
+    });
   }
 }
 

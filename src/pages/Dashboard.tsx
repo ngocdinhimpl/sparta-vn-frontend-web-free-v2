@@ -46,7 +46,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onStartTraining, onViewAllWeakSou
 
   useEffect(() => {
     // Only show prompt if not logged in and this is NOT the very first mount of the dashboard in this session
-    if (!currentUser && sessionStorage.getItem('dashboard_mounted') === 'true') {
+    if ((!currentUser || currentUser.isAnonymous) && sessionStorage.getItem('dashboard_mounted') === 'true') {
       setShowBackupPrompt(true);
     }
     sessionStorage.setItem('dashboard_mounted', 'true');
@@ -157,17 +157,21 @@ const Dashboard: React.FC<DashboardProps> = ({ onStartTraining, onViewAllWeakSou
         <div className="w-full sm:w-auto flex justify-between items-center sm:block">
           <div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{t('dashboard.title')}</h2>
-            {currentUser && (
+            {currentUser && !currentUser.isAnonymous ? (
               <p className="text-sm sm:text-base text-slate-500 font-medium">
                 {t('dashboard.welcome')}, {currentUser.displayName || currentUser.email}
+              </p>
+            ) : (
+              <p className="text-sm sm:text-base text-slate-500 font-medium">
+                {t('dashboard.welcome')}, {t('common.guest', 'Guest')}
               </p>
             )}
           </div>
           
           {/* Avatar for mobile only (shown here when stacked) */}
           <div className="sm:hidden">
-            {currentUser && (
-              <div className="relative group cursor-pointer">
+            {currentUser && !currentUser.isAnonymous && (
+              <div className="relative group">
                 <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white text-lg font-black shadow-lg shadow-red-100">
                   {currentUser.displayName?.charAt(0) || currentUser.email?.charAt(0).toUpperCase()}
                 </div>
@@ -189,10 +193,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onStartTraining, onViewAllWeakSou
           </div>
           
           {/* Avatar for desktop */}
-          {currentUser && (
+          {currentUser && !currentUser.isAnonymous && (
             <div className="hidden sm:flex items-center gap-4">
-              <div className="relative group cursor-pointer">
-                <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white text-xl font-black shadow-lg shadow-red-100 group-hover:scale-105 transition-transform">
+              <div className="relative group">
+                <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white text-xl font-black shadow-lg shadow-red-100">
                   {currentUser.displayName?.charAt(0) || currentUser.email?.charAt(0).toUpperCase()}
                 </div>
                 <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></div>

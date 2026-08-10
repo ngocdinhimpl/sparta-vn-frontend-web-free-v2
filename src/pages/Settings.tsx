@@ -19,6 +19,7 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
   const { showToast } = useToast();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [showResetConfirmModal, setShowResetConfirmModal] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
 
   const handleLanguageSelect = (lang: Language) => {
     setLanguage(lang);
@@ -26,13 +27,34 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
   };
 
   const handleReset = async () => {
+    setShowResetConfirmModal(false);
+    setIsResetting(true);
     try {
       await storageService.clearAllPreferences();
       await audioRecordingService.clearAllRecordings();
-      window.location.reload();
+      
+      if (auth.currentUser) {
+        try {
+          const token = await auth.currentUser.getIdToken();
+          await fetch('/api/reset', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+        } catch (e) {
+          console.error('Failed to wipe backend data', e);
+        }
+        
+        if (auth.currentUser.isAnonymous) {
+          await signOut(auth);
+        }
+      }
     } catch (error) {
       console.error('Reset error:', error);
       showToast('Reset failed', 'error');
+      setIsResetting(false);
+    } finally {
+      await new Promise(r => setTimeout(r, 200));
+      window.location.href = '/';
     }
   };
 
@@ -62,7 +84,7 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
       <div className="max-w-2xl mx-auto h-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
         
         {/* User Profile Section (If Logged In) */}
-        {currentUser && (
+        {currentUser && !currentUser.isAnonymous && (
           <div className="mb-10 px-4">
             <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">
               Profile
@@ -162,7 +184,7 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
 
         {/* Action Button Section */}
         <div className="mt-auto px-4 pb-12">
-          {currentUser ? (
+          {currentUser && !currentUser.isAnonymous ? (
              <button 
               onClick={handleLogout}
               className="w-full bg-[#1A1F2B] text-white py-5 rounded-xl font-black text-sm uppercase tracking-[0.15em] flex items-center justify-center gap-3 hover:bg-slate-800 transition-all shadow-xl active:scale-[0.98]"
@@ -303,6 +325,14 @@ const Settings: React.FC<SettingsProps> = ({ onLoginClick, currentUser, onChange
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Loading HUD for Reset */}
+      {isResetting && (
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/80 backdrop-blur-md">
+          <div className="w-16 h-16 border-4 border-slate-200 border-t-red-500 rounded-full animate-spin mb-4 shadow-lg"></div>
+          <p className="text-slate-700 font-black text-lg animate-pulse">{t('settings.resetting', 'Đang thiết lập lại...')}</p>
         </div>
       )}
     </>

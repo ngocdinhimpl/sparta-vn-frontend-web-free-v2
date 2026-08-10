@@ -1,4 +1,4 @@
-import { db } from './firebase';
+import { db, auth } from './firebase';
 import { doc, setDoc, getDoc, collection, query, where, getDocs, updateDoc, deleteDoc } from 'firebase/firestore';
 import { VocabItem, PronunciationResultRecord, PracticeStats, DailyScore, RankingRecord } from './storageService';
 
@@ -10,10 +10,36 @@ class CloudStorageService {
   /* ===================== RANKINGS (Shared) ===================== */
 
   async saveRanking(record: RankingRecord): Promise<void> {
-    // Generate a unique ID combining userId and avatarId
-    const docId = `${record.userId}_${record.avatarId}`;
-    const docRef = doc(db, 'rankings', docId);
-    await setDoc(docRef, record);
+    try {
+      let token = '';
+      if (auth.currentUser) {
+        token = await auth.currentUser.getIdToken();
+      }
+      if (!token) {
+        throw new Error('Must be logged in to save ranking');
+      }
+      
+      const response = await fetch('/api/ranking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          avatarId: record.avatarId,
+          rankingName: record.rankingName,
+          stage: record.stage
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to save ranking via backend');
+      }
+    } catch (e) {
+      console.error('saveRanking backend error:', e);
+      throw e;
+    }
   }
 
   async getRankingsByLevel(level: 0 | 8): Promise<RankingRecord[]> {

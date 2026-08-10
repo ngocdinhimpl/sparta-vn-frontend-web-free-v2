@@ -4,7 +4,7 @@ import { checkPronunciationById, PronunciationResult, uploadAudioToCloud } from 
 import { useLoading } from '@/contexts/LoadingContext';
 import { useTranslation } from '@/i18n';
 import { useToast } from '@/contexts/ToastContext';
-import { storageService } from '@/services/storageService';
+import { VocabItem, storageService } from '@/services/storageService';
 import { auth, analytics } from '@/services/firebase';
 import { logEvent } from 'firebase/analytics';
 
@@ -157,7 +157,8 @@ const PronunciationDetail: React.FC<PronunciationDetailProps> = ({
     showLoading(t('pronunciation.analyzing'));
 
     try {
-      const result = await checkPronunciationById(recordingId, item.vi);
+      const currentAvatarId = await storageService.getSelectedAvatar() || 'avatar1';
+      const result = await checkPronunciationById(recordingId, item.vi, item.id, currentAvatarId);
       console.log('Pronunciation result:', result);
       
       // If user is logged in, upload the audio to S3

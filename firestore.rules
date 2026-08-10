@@ -16,8 +16,8 @@ service cloud.firestore {
     // Global rankings collection
     match /rankings/{rankingId} {
       allow read: true; // Anyone can view rankings
-      // Allow users to write ranking records even if not logged in
-      allow write: if true;
+      // Writes are strictly handled by the Backend (Admin SDK)
+      allow write: if false;
     }
     
     /* ===================== FEEDBACKS ===================== */
@@ -32,6 +32,12 @@ service cloud.firestore {
     match /users/{userId} {
       // Main user document
       allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Prevent client from writing to pronunciation_results directly (must go through Backend)
+      match /pronunciation_results/{vocabId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if false;
+      }
       
       // Sub-collections
       match /{document=**} {

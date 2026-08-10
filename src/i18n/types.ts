@@ -14,6 +14,7 @@ export interface Translations {
     months: string;
     finish: string;
     backToList: string;
+    guest: string;
   };
   nav: {
     home: string;
@@ -71,6 +72,12 @@ export interface Translations {
     vietnamese: string;
     change_avatar: string;
     customize_appearance: string;
+    resetApp: string;
+    resetConfirmTitle: string;
+    resetConfirmMessage: string;
+    resetting: string;
+    logout: string;
+    logout_success: string;
   };
   training: {
     title: string;

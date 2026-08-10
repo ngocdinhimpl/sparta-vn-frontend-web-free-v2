@@ -48,15 +48,21 @@ export interface PronunciationResult {
   audioUrl?: string;
 }
 
+import { auth } from './firebase';
+
 /**
  * Check pronunciation by sending audio blob to server
  * @param audioBlob - The recorded audio blob
  * @param referenceText - The expected text to compare against
+ * @param vocabId - The ID of the vocabulary word
+ * @param avatarId - The ID of the active avatar
  * @returns Promise with pronunciation analysis result
  */
 export async function checkPronunciation(
   audioBlob: Blob,
-  referenceText: string
+  referenceText: string,
+  vocabId: string,
+  avatarId: string
 ): Promise<PronunciationResult> {
   const formData = new FormData();
 
@@ -67,6 +73,13 @@ export async function checkPronunciation(
 
   formData.append('audio', audioFile);
   formData.append('referenceText', referenceText);
+  formData.append('vocabId', vocabId);
+  formData.append('avatarId', avatarId);
+
+  let token = '';
+  if (auth.currentUser) {
+    token = await auth.currentUser.getIdToken();
+  }
 
   const response = await axios.post<PronunciationResult>(
     `${API_URL}/pronunciation`,
@@ -75,6 +88,7 @@ export async function checkPronunciation(
       headers: {
         Accept: 'application/json',
         'Content-Type': 'multipart/form-data',
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
       },
       timeout: 30000,
     }
@@ -87,11 +101,15 @@ export async function checkPronunciation(
  * Check pronunciation using recording ID from IndexedDB
  * @param recordingId - The ID of the saved recording
  * @param referenceText - The expected text to compare against
+ * @param vocabId - The ID of the vocabulary word
+ * @param avatarId - The ID of the active avatar
  * @returns Promise with pronunciation analysis result
  */
 export async function checkPronunciationById(
   recordingId: string,
-  referenceText: string
+  referenceText: string,
+  vocabId: string,
+  avatarId: string
 ): Promise<PronunciationResult> {
   // Import dynamically to avoid circular dependency
   
@@ -101,7 +119,7 @@ export async function checkPronunciationById(
     throw new Error('Recording not found');
   }
 
-  return checkPronunciation(blob, referenceText);
+  return checkPronunciation(blob, referenceText, vocabId, avatarId);
 }
 
 /**

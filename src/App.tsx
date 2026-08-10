@@ -3,7 +3,7 @@ import { AppTab } from '@/types';
 import { PronunciationResult as PronunciationResultType } from '@/services/api';
 import { VocabType, storageService } from '@/services/storageService';
 import { auth } from '@/services/firebase';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import { onAuthStateChanged, User, signInAnonymously } from 'firebase/auth';
 import { audioRecordingService } from '@/services/AudioRecordingService';
 import Sidebar from '@/components/layout/Sidebar';
 import Dashboard from '@/pages/Dashboard';
@@ -57,10 +57,17 @@ const App: React.FC = () => {
   // Auth state listener
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      // Data wiping is now handled explicitly in Login/Register/Logout actions to prevent sync race conditions
+      if (!user) {
+        // Automatically sign in as an anonymous guest
+        signInAnonymously(auth).catch(err => {
+          console.error("Failed to sign in anonymously", err);
+          setIsAuthReady(true); // Let app render even if auth fails completely
+        });
+        return; // Exit and wait for the auth state to trigger again with the new anonymous user
+      }
 
       setCurrentUser(user);
-      storageService.setUserId(user ? user.uid : null);
+      storageService.setUserId(user.uid);
       setIsAuthReady(true);
       
       // If user logs out, we might want to clear some local cache or redirect

@@ -4,6 +4,8 @@ import { cloudStorageService } from '@/services/cloudStorageService';
 import { AVAILABLE_AVATARS, getDashboardAvatarsForSet } from '@/constants';
 import AvatarSelection from './AvatarSelection';
 import { useTranslation } from '@/i18n';
+import { auth } from '@/services/firebase';
+import { updateProfile } from 'firebase/auth';
 
 interface LevelCompletionFlowProps {
   currentLevel: 0 | 8;
@@ -20,6 +22,12 @@ const LevelCompletionFlow: React.FC<LevelCompletionFlowProps> = ({ currentLevel,
     initialStep === 'avatar' ? 'avatar' : (initialStep === 'message' ? 'message' : (isLoggedIn ? 'saving_auto' : 'name'))
   );
   const [rankingName, setRankingName] = useState('');
+
+  useEffect(() => {
+    if (auth.currentUser?.displayName) {
+      setRankingName(auth.currentUser.displayName);
+    }
+  }, []);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [disabledAvatars, setDisabledAvatars] = useState<string[]>([]);
   const { t } = useTranslation();
@@ -45,8 +53,17 @@ const LevelCompletionFlow: React.FC<LevelCompletionFlowProps> = ({ currentLevel,
 
   const handleNameSubmit = async (autoName?: string) => {
     setIsSubmitting(true);
-    const nameToSave = autoName || rankingName.trim() || `User_${Math.floor(Math.random() * 1000000)}`;
     try {
+      const nameToSave = autoName || rankingName.trim() || `User_${Math.floor(Math.random() * 1000000)}`;
+
+      if (auth.currentUser && auth.currentUser.displayName !== nameToSave) {
+        try {
+          await updateProfile(auth.currentUser, { displayName: nameToSave });
+        } catch (e) {
+          console.error('Failed to update Firebase profile displayName', e);
+        }
+      }
+
       const currentLevelData = await storageService.getUserLevel(avatarId);
       await storageService.updateUserLevel(avatarId, { rankingName: nameToSave });
 

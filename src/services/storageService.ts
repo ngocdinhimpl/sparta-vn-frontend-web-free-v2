@@ -4,6 +4,7 @@
  */
 import { cloudStorageService } from './cloudStorageService';
 import { computeNewLevel, getDefaultUserLevel, UserLevelData } from './levelService';
+import { trackLevelChange, setUserProps } from './analyticsService';
 
 const DB_NAME = 'SpartaPreferencesDB';
 const DB_VERSION = 1;
@@ -349,6 +350,12 @@ class StorageService {
       const existing = await this.getPreference<UserLevelData | null>(levelKey, null);
       const levelData = existing ?? getDefaultUserLevel(avatarId);
       const updated = computeNewLevel(levelData, newOverallScore);
+
+      if (updated.currentLevel !== levelData.currentLevel) {
+        const direction = updated.currentLevel > levelData.currentLevel ? 'up' : 'down';
+        trackLevelChange(direction, levelData.currentLevel, updated.currentLevel);
+        setUserProps({ current_level: updated.currentLevel });
+      }
       
       // If we just entered Level 0 or Level 8, record the score that got us there
       // We only set this if rankingName is not yet set (meaning the dialog hasn't been completed yet)

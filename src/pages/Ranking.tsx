@@ -5,6 +5,7 @@ import { RankingRecord, storageService } from '@/services/storageService';
 import { getDashboardAvatarsForSet, AVAILABLE_AVATARS } from '@/constants';
 import HappyIcon from '@/assets/common/common-happy.png';
 import AngryIcon from '@/assets/common/common-angry.png';
+import { trackRankingView } from '@/services/analyticsService';
 
 const Ranking: React.FC = () => {
   const { t } = useTranslation();
@@ -35,6 +36,7 @@ const Ranking: React.FC = () => {
       setIsLoading(true);
       try {
         const level = activeTab === 'level0' ? 0 : 8;
+        trackRankingView(level as 0 | 8);
         const data = await cloudStorageService.getRankingsByLevel(level);
         setRankings(data);
       } catch (error) {

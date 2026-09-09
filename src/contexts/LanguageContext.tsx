@@ -4,6 +4,7 @@ import { ja } from '../i18n/translations/ja';
 import { en } from '../i18n/translations/en';
 import { vi } from '../i18n/translations/vi';
 import { Translations } from '../i18n/types';
+import { setUserProps } from '@/services/analyticsService';
 
 interface LanguageContextType {
   language: Language;
@@ -33,10 +34,12 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       try {
         const savedLanguage = await storageService.getLanguage();
         setLanguageState(savedLanguage);
+        setUserProps({ language: savedLanguage });
       } catch (error) {
         console.error('Failed to load language preference:', error);
         // Default to Japanese if loading fails
         setLanguageState('ja');
+        setUserProps({ language: 'ja' });
       } finally {
         setIsLoaded(true);
       }
@@ -50,10 +53,12 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     try {
       await storageService.setLanguage(lang);
       setLanguageState(lang);
+      setUserProps({ language: lang });
     } catch (error) {
       console.error('Failed to save language preference:', error);
       // Still update UI even if saving fails
       setLanguageState(lang);
+      setUserProps({ language: lang });
     }
   }, []);
 

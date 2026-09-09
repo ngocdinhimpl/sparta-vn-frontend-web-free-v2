@@ -49,6 +49,10 @@ export interface PronunciationResult {
 }
 
 import { auth } from './firebase';
+import {
+  trackPronunciationSubmit,
+  trackPronunciationError,
+} from './analyticsService';
 
 /**
  * Check pronunciation by sending audio blob to server
@@ -81,20 +85,40 @@ export async function checkPronunciation(
     token = await auth.currentUser.getIdToken();
   }
 
-  const response = await axios.post<PronunciationResult>(
-    `${API_URL}/pronunciation`,
-    formData,
-    {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
-      },
-      timeout: 30000,
-    }
-  );
+  try {
+    const response = await axios.post<PronunciationResult>(
+      `${API_URL}/pronunciation`,
+      formData,
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        timeout: 30000,
+      }
+    );
 
-  return response.data;
+    const result = response.data;
+    const score = result.score;
+    trackPronunciationSubmit({
+      vocabId,
+      scoreOverall: score?.overall ?? 0,
+      scoreAccuracy: score?.accuracy ?? 0,
+      scoreFluency: score?.fluency ?? 0,
+      scoreCompleteness: score?.completeness ?? 0,
+      scoreProsody: score?.prosody ?? 0,
+    });
+
+    return result;
+  } catch (error) {
+    const errorType =
+      axios.isAxiosError(error)
+        ? (error.code || `http_${error.response?.status ?? 'unknown'}`)
+        : (error instanceof Error ? error.name : 'unknown');
+    trackPronunciationError({ vocabId, errorType });
+    throw error;
+  }
 }
 
 /**
@@ -116,6 +140,7 @@ export async function checkPronunciationById(
   const blob = await audioRecordingService.getRecording(recordingId);
   
   if (!blob) {
+    trackPronunciationError({ vocabId, errorType: 'recording_not_found' });
     throw new Error('Recording not found');
   }
 

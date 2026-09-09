@@ -6,6 +6,7 @@ import AvatarSelection from './AvatarSelection';
 import { useTranslation } from '@/i18n';
 import { auth } from '@/services/firebase';
 import { updateProfile } from 'firebase/auth';
+import { trackAvatarSelected } from '@/services/analyticsService';
 
 interface LevelCompletionFlowProps {
   currentLevel: 0 | 8;
@@ -126,6 +127,7 @@ const LevelCompletionFlow: React.FC<LevelCompletionFlowProps> = ({ currentLevel,
       return; 
     }
     await storageService.setSelectedAvatar(newAvatarId);
+    trackAvatarSelected(newAvatarId, false);
     onComplete();
   };
 

@@ -3,6 +3,7 @@ import { db, auth } from '@/services/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/contexts/ToastContext';
 import { useTranslation } from '@/i18n';
+import { trackFeedbackSubmit } from '@/services/analyticsService';
 
 const Feedback: React.FC = () => {
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ const Feedback: React.FC = () => {
         userId: 'anonymous', // Enforce anonymity
         createdAt: serverTimestamp(),
       });
+      trackFeedbackSubmit(content.trim().length);
       showToast(t('feedback.success'), 'success');
       setContent('');
     } catch (error) {

@@ -24,6 +24,13 @@ import Feedback from '@/pages/Feedback';
 import TermsOfUse from '@/pages/TermsOfUse';
 import { Icons } from '@/constants';
 import { useTranslation } from '@/i18n';
+import {
+  trackPageView,
+  trackAvatarSelected,
+  trackUiClick,
+  setAnalyticsUserId,
+  setUserProps,
+} from '@/services/analyticsService';
 
 enum LessonFlow {
   MODES = 'MODES',
@@ -32,6 +39,25 @@ enum LessonFlow {
   PRONUNCIATION = 'PRONUNCIATION',
   RESULT = 'RESULT'
 }
+
+const TAB_PAGE_PATH: Record<AppTab, string> = {
+  [AppTab.HOME]: '/home',
+  [AppTab.TRAINING]: '/training/modes',
+  [AppTab.HISTORY]: '/history',
+  [AppTab.WEAK_SOUNDS]: '/weak-sounds',
+  [AppTab.RANKING]: '/ranking',
+  [AppTab.SETTINGS]: '/settings',
+  [AppTab.FEEDBACK]: '/feedback',
+  [AppTab.AVATAR_SELECTION]: '/avatar-selection',
+};
+
+const LESSON_FLOW_PATH: Record<LessonFlow, string> = {
+  [LessonFlow.MODES]: '/training/modes',
+  [LessonFlow.STAGES]: '/training/stages',
+  [LessonFlow.VOCAB]: '/training/vocab',
+  [LessonFlow.PRONUNCIATION]: '/training/pronunciation',
+  [LessonFlow.RESULT]: '/training/result',
+};
 
 type AuthScreen = 'login' | 'register' | 'terms' | null;
 
@@ -68,7 +94,14 @@ const App: React.FC = () => {
 
       setCurrentUser(user);
       storageService.setUserId(user.uid);
+      setAnalyticsUserId(user.uid);
       setIsAuthReady(true);
+
+      // Sync level user property when auth is known
+      storageService.getSelectedAvatar().then(async (avatarId) => {
+        const levelData = await storageService.getUserLevel(avatarId || 'avatar1');
+        setUserProps({ current_level: levelData.currentLevel });
+      }).catch(() => {});
       
       // If user logs out, we might want to clear some local cache or redirect
       if (!user && (activeTab === AppTab.SETTINGS || activeTab === AppTab.HISTORY)) {
@@ -78,6 +111,37 @@ const App: React.FC = () => {
 
     return () => unsubscribe();
   }, []);
+
+  // Manual page_view — SPA has no real URL routes
+  React.useEffect(() => {
+    if (!isAuthReady) return;
+
+    if (authScreen === 'terms') {
+      trackPageView('/auth/terms');
+      return;
+    }
+    if (authScreen === 'login') {
+      trackPageView('/auth/login');
+      return;
+    }
+    if (authScreen === 'register') {
+      trackPageView('/auth/register');
+      return;
+    }
+    if (isFirstTimeLaunch) {
+      trackPageView('/avatar-selection', 'Avatar Selection (First Time)');
+      return;
+    }
+    if (completionFlowData) {
+      trackPageView('/level-completion');
+      return;
+    }
+    if (activeTab === AppTab.TRAINING) {
+      trackPageView(LESSON_FLOW_PATH[lessonFlow]);
+      return;
+    }
+    trackPageView(TAB_PAGE_PATH[activeTab] ?? '/home');
+  }, [isAuthReady, authScreen, isFirstTimeLaunch, completionFlowData, activeTab, lessonFlow]);
 
   // Load random mode preference
   React.useEffect(() => {
@@ -122,10 +186,22 @@ const App: React.FC = () => {
   };
 
   const handleAvatarSelect = async (avatarId: string) => {
+    const wasFirstTime = isFirstTimeLaunch;
     await storageService.setSelectedAvatar(avatarId);
     setSelectedAvatar(avatarId);
     setIsFirstTimeLaunch(false);
+    trackAvatarSelected(avatarId, wasFirstTime);
     setActiveTab(AppTab.HOME); // Navigate to Dashboard
+  };
+
+  const handleTabChange = (tab: AppTab, location: 'sidebar' | 'mobile_nav' = 'sidebar') => {
+    trackUiClick({
+      elementId: `nav_${tab}`,
+      elementText: tab,
+      location,
+    });
+    setActiveTab(tab);
+    if (tab === AppTab.TRAINING) setLessonFlow(LessonFlow.MODES);
   };
 
   // Handle vocabulary item selection with completion check
@@ -395,10 +471,7 @@ const App: React.FC = () => {
       {/* Navigation Sidebar (Web Version) */}
       <Sidebar 
         activeTab={activeTab} 
-        onTabChange={(tab) => {
-          setActiveTab(tab);
-          if (tab === AppTab.TRAINING) setLessonFlow(LessonFlow.MODES);
-        }} 
+        onTabChange={(tab) => handleTabChange(tab, 'sidebar')} 
       />
 
       {/* Main Content Area */}
@@ -413,23 +486,18 @@ const App: React.FC = () => {
             icon="Home" 
             label={t('nav.home')} 
             active={activeTab === AppTab.HOME} 
-            onClick={() => {
-              setActiveTab(AppTab.HOME);
-            }} 
+            onClick={() => handleTabChange(AppTab.HOME, 'mobile_nav')} 
           />
           <NavItem 
             icon="Book" 
             label={t('nav.training')} 
             active={activeTab === AppTab.TRAINING} 
-            onClick={() => {
-              setActiveTab(AppTab.TRAINING);
-              setLessonFlow(LessonFlow.MODES);
-            }} 
+            onClick={() => handleTabChange(AppTab.TRAINING, 'mobile_nav')} 
           />
-          <NavItem icon="History" label={t('nav.history')} active={activeTab === AppTab.HISTORY} onClick={() => setActiveTab(AppTab.HISTORY)} />
-          <NavItem icon="Trophy" label={t('nav.ranking')} active={activeTab === AppTab.RANKING} onClick={() => setActiveTab(AppTab.RANKING)} />
-          <NavItem icon="Settings" label={t('nav.settings')} active={activeTab === AppTab.SETTINGS} onClick={() => setActiveTab(AppTab.SETTINGS)} />
-          <NavItem icon="Message" label={t('nav.feedback')} active={activeTab === AppTab.FEEDBACK} isSpecial={true} onClick={() => setActiveTab(AppTab.FEEDBACK)} />
+          <NavItem icon="History" label={t('nav.history')} active={activeTab === AppTab.HISTORY} onClick={() => handleTabChange(AppTab.HISTORY, 'mobile_nav')} />
+          <NavItem icon="Trophy" label={t('nav.ranking')} active={activeTab === AppTab.RANKING} onClick={() => handleTabChange(AppTab.RANKING, 'mobile_nav')} />
+          <NavItem icon="Settings" label={t('nav.settings')} active={activeTab === AppTab.SETTINGS} onClick={() => handleTabChange(AppTab.SETTINGS, 'mobile_nav')} />
+          <NavItem icon="Message" label={t('nav.feedback')} active={activeTab === AppTab.FEEDBACK} isSpecial={true} onClick={() => handleTabChange(AppTab.FEEDBACK, 'mobile_nav')} />
         </div>
       </main>
     </div>

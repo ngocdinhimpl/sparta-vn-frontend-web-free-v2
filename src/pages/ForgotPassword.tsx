@@ -66,6 +66,9 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onBack, onSignInClick }
           <p className="text-xs font-semibold text-slate-400 max-w-xs leading-relaxed">
             {t('auth.resetPasswordDesc')}
           </p>
+          <p className="text-xs font-semibold text-red-400 max-w-xs leading-relaxed mt-2">
+            * {t('auth.checkSpamFolder')}
+          </p>
         </div>
 
         {/* Form Section */}

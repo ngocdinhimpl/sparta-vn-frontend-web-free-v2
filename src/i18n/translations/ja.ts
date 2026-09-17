@@ -201,6 +201,7 @@ export const ja: Translations = {
     resetPasswordSuccess: 'パスワードが再設定されました。新しいパスワードでログインしてください。',
     invalidResetLink: 'リンクが無効か、有効期限が切れています。',
     passwordMismatch: '確認用パスワードが一致しません。',
+    checkSpamFolder: 'メールが届かない場合は、迷惑メールフォルダもご確認ください。',
   },
   feedback: {
     title: '(β版)ご意見箱',

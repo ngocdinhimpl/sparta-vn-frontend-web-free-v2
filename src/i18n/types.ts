@@ -199,6 +199,7 @@ export interface Translations {
     resetPasswordSuccess: string;
     invalidResetLink: string;
     passwordMismatch: string;
+    checkSpamFolder: string;
   };
   feedback: {
     title: string;

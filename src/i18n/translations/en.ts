@@ -201,6 +201,7 @@ export const en: Translations = {
     resetPasswordSuccess: 'Password reset successfully! Please sign in with your new password.',
     invalidResetLink: 'Password reset link is invalid or has expired.',
     passwordMismatch: 'Passwords do not match.',
+    checkSpamFolder: "If you don't see the email, please check your spam folder.",
   },
   feedback: {
     title: '(Beta) Suggestion Box',

@@ -201,6 +201,7 @@ export const vi: Translations = {
     resetPasswordSuccess: 'Đặt lại mật khẩu thành công! Hãy đăng nhập bằng mật khẩu mới.',
     invalidResetLink: 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.',
     passwordMismatch: 'Mật khẩu xác nhận không khớp.',
+    checkSpamFolder: 'Nếu không thấy mail về xin hãy kiểm tra cả thư mục spam.',
   },
   feedback: {
     title: '(Beta) Góp ý',

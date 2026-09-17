@@ -188,6 +188,17 @@ export interface Translations {
     professional_training: string;
     professional_pronunciation: string;
     enter_name: string;
+    forgotPassword: string;
+    resetPassword: string;
+    resetPasswordDesc: string;
+    sendResetLink: string;
+    resetLinkSent: string;
+    newPassword: string;
+    confirmNewPassword: string;
+    updatePassword: string;
+    resetPasswordSuccess: string;
+    invalidResetLink: string;
+    passwordMismatch: string;
   };
   feedback: {
     title: string;

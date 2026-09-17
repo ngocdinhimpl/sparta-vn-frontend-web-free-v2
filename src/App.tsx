@@ -16,6 +16,8 @@ import Settings from '@/pages/Settings';
 import History from '@/pages/History';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
+import ForgotPassword from '@/pages/ForgotPassword';
+import ResetPassword from '@/pages/ResetPassword';
 import WeakSounds from '@/pages/WeakSounds';
 import AvatarSelection from '@/pages/AvatarSelection';
 import LevelCompletionFlow from '@/pages/LevelCompletionFlow';
@@ -59,7 +61,7 @@ const LESSON_FLOW_PATH: Record<LessonFlow, string> = {
   [LessonFlow.RESULT]: '/training/result',
 };
 
-type AuthScreen = 'login' | 'register' | 'terms' | null;
+type AuthScreen = 'login' | 'register' | 'forgot_password' | 'reset_password' | 'terms' | null;
 
 const App: React.FC = () => {
   const { t } = useTranslation();
@@ -68,6 +70,7 @@ const App: React.FC = () => {
   const [previousFlow, setPreviousFlow] = useState<LessonFlow | null>(null);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [authScreen, setAuthScreen] = useState<AuthScreen>(null);
+  const [resetPasswordCode, setResetPasswordCode] = useState<string | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [pronunciationResult, setPronunciationResult] = useState<PronunciationResultType | null>(null);
   const [selectedVocabType, setSelectedVocabType] = useState<VocabType>('word');
@@ -112,6 +115,22 @@ const App: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
+  // Detect Firebase email action link (e.g. password reset)
+  React.useEffect(() => {
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+      const mode = searchParams.get('mode');
+      const oobCode = searchParams.get('oobCode');
+
+      if (mode === 'resetPassword' && oobCode) {
+        setResetPasswordCode(oobCode);
+        setAuthScreen('reset_password');
+      }
+    } catch (e) {
+      console.error('Failed to parse URL query params', e);
+    }
+  }, []);
+
   // Manual page_view — SPA has no real URL routes
   React.useEffect(() => {
     if (!isAuthReady) return;
@@ -126,6 +145,14 @@ const App: React.FC = () => {
     }
     if (authScreen === 'register') {
       trackPageView('/auth/register');
+      return;
+    }
+    if (authScreen === 'forgot_password') {
+      trackPageView('/auth/forgot-password');
+      return;
+    }
+    if (authScreen === 'reset_password') {
+      trackPageView('/auth/reset-password');
       return;
     }
     if (isFirstTimeLaunch) {
@@ -422,6 +449,7 @@ const App: React.FC = () => {
       <Login 
         onLogin={() => setAuthScreen(null)} 
         onSignUpClick={() => setAuthScreen('register')}
+        onForgotPasswordClick={() => setAuthScreen('forgot_password')}
         onBack={() => setAuthScreen(null)} 
       />
     );
@@ -433,6 +461,35 @@ const App: React.FC = () => {
         onRegister={() => setAuthScreen(null)}
         onSignInClick={() => setAuthScreen('login')}
         onBack={() => setAuthScreen('login')}
+      />
+    );
+  }
+
+  if (authScreen === 'forgot_password') {
+    return (
+      <ForgotPassword 
+        onSignInClick={() => setAuthScreen('login')}
+        onBack={() => setAuthScreen('login')}
+      />
+    );
+  }
+
+  if (authScreen === 'reset_password') {
+    return (
+      <ResetPassword 
+        oobCode={resetPasswordCode || ''}
+        onSuccess={() => {
+          if (window.history.replaceState) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+          setAuthScreen('login');
+        }}
+        onBack={() => {
+          if (window.history.replaceState) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+          setAuthScreen('login');
+        }}
       />
     );
   }

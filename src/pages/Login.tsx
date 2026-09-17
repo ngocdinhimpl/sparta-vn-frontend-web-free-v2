@@ -2,7 +2,7 @@ import React from 'react';
 import { Icons } from '@/constants';
 import { useTranslation } from '@/i18n';
 import { auth } from '@/services/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { storageService } from '@/services/storageService';
 import { audioRecordingService } from '@/services/AudioRecordingService';
 import { useToast } from '@/contexts/ToastContext';
@@ -13,9 +13,10 @@ interface LoginProps {
   onLogin: () => void;
   onBack: () => void;
   onSignUpClick: () => void;
+  onForgotPasswordClick: () => void;
 }
 
-const Login: React.FC<LoginProps> = ({ onLogin, onBack, onSignUpClick }) => {
+const Login: React.FC<LoginProps> = ({ onLogin, onBack, onSignUpClick, onForgotPasswordClick }) => {
   const { t } = useTranslation();
   const { showToast } = useToast();
   const { showLoading, hideLoading } = useLoading();
@@ -89,7 +90,16 @@ const Login: React.FC<LoginProps> = ({ onLogin, onBack, onSignUpClick }) => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">{t('auth.password')}</label>
+            <div className="flex items-center justify-between ml-1">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{t('auth.password')}</label>
+              <button
+                type="button"
+                onClick={onForgotPasswordClick}
+                className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors"
+              >
+                {t('auth.forgotPassword')}
+              </button>
+            </div>
             <div className="relative group">
               <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-red-500 transition-colors">
                 <Icons.Lock />

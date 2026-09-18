@@ -340,8 +340,10 @@ class StorageService {
       updated_at: new Date().toISOString(),
     };
 
-    // The backend now securely saves the pronunciation_result to Firestore.
-    // We only need to compute the local user level progression for UI purposes.
+    // Save to Firestore if logged in to preserve averageOverallScore which the backend might not compute
+    if (this.userId) {
+      await cloudStorageService.savePronunciationResult(this.userId, vocab_id, record);
+    }
 
     // Update user level based on this score
     try {

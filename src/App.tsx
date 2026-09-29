@@ -22,6 +22,8 @@ import WeakSounds from '@/pages/WeakSounds';
 import AvatarSelection from '@/pages/AvatarSelection';
 import LevelCompletionFlow from '@/pages/LevelCompletionFlow';
 import Ranking from '@/pages/Ranking';
+import { SchoolRecommendationModal } from '@/components/common/SchoolRecommendationModal';
+import { useToast } from '@/contexts/ToastContext';
 import Feedback from '@/pages/Feedback';
 import TermsOfUse from '@/pages/TermsOfUse';
 import { Icons } from '@/constants';
@@ -82,6 +84,25 @@ const App: React.FC = () => {
   const [selectedAvatar, setSelectedAvatar] = useState<string>('avatar1');
   const [isFirstTimeLaunch, setIsFirstTimeLaunch] = useState(false);
   const [completionFlowData, setCompletionFlowData] = useState<{level: 0 | 8, avatarId: string, initialStep?: 'name' | 'avatar'} | null>(null);
+  
+  const { showToast } = useToast();
+  const [showSchoolModal, setShowSchoolModal] = useState(false);
+
+  // Add event listener for level/stage changed
+  React.useEffect(() => {
+    const handleProgressChange = () => {
+      showToast('学校・教材で発音練習しませんか？', 'info', () => {
+        setShowSchoolModal(true);
+      });
+    };
+
+    window.addEventListener('level_changed', handleProgressChange);
+    window.addEventListener('stage_changed', handleProgressChange);
+    return () => {
+      window.removeEventListener('level_changed', handleProgressChange);
+      window.removeEventListener('stage_changed', handleProgressChange);
+    };
+  }, [showToast]);
 
   // Auth state listener
   React.useEffect(() => {
@@ -557,6 +578,8 @@ const App: React.FC = () => {
           <NavItem icon="Message" label={t('nav.feedback')} active={activeTab === AppTab.FEEDBACK} isSpecial={true} onClick={() => handleTabChange(AppTab.FEEDBACK, 'mobile_nav')} />
         </div>
       </main>
+      
+      <SchoolRecommendationModal isOpen={showSchoolModal} onClose={() => setShowSchoolModal(false)} />
     </div>
   );
 };

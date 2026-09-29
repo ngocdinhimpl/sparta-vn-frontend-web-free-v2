@@ -6,11 +6,12 @@ export interface Toast {
   id: string;
   message: string;
   type: ToastType;
+  onClick?: () => void;
 }
 
 interface ToastContextType {
   toasts: Toast[];
-  showToast: (message: string, type?: ToastType) => void;
+  showToast: (message: string, type?: ToastType, onClick?: () => void) => void;
   hideToast: (id: string) => void;
 }
 
@@ -19,16 +20,16 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const showToast = (message: string, type: ToastType = 'error') => {
+  const showToast = (message: string, type: ToastType = 'error', onClick?: () => void) => {
     const id = Date.now().toString();
-    const newToast: Toast = { id, message, type };
+    const newToast: Toast = { id, message, type, onClick };
 
     setToasts((prev) => [...prev, newToast]);
 
-    // Auto dismiss after 4 seconds
+    // Auto dismiss after 4 seconds (or 8 seconds if clickable)
     setTimeout(() => {
       hideToast(id);
-    }, 4000);
+    }, onClick ? 8000 : 4000);
   };
 
   const hideToast = (id: string) => {

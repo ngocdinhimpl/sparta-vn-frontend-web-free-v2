@@ -54,9 +54,9 @@ const LevelCompletionFlow: React.FC<LevelCompletionFlowProps> = ({ currentLevel,
 
   const handleNameSubmit = async (autoName?: string) => {
     setIsSubmitting(true);
+    const nameToSave = autoName || rankingName.trim() || `User_${Math.floor(Math.random() * 1000000)}`;
+    
     try {
-      const nameToSave = autoName || rankingName.trim() || `User_${Math.floor(Math.random() * 1000000)}`;
-
       if (auth.currentUser && auth.currentUser.displayName !== nameToSave) {
         try {
           await updateProfile(auth.currentUser, { displayName: nameToSave });
@@ -224,8 +224,10 @@ const LevelCompletionFlow: React.FC<LevelCompletionFlowProps> = ({ currentLevel,
                 発音は基礎からやり直すべしだ{'\n\n'}
                 学校や教材で習ってみてはいかがだろう？{'\n'}
                 以下を参考にすべし{'\n'}
-                （学校名）{'\n'}
-                <a href="https://xxxxxxxxxxxxxx" className="text-blue-500 underline" target="_blank" rel="noreferrer">https://xxxxxxxxxxxxxx</a>
+                [学校] ZEN外国語教育センター 【ベトナム・ハノイ】{'\n'}
+                <a href="https://zen.kosaidovn.com/" className="text-blue-500 underline" target="_blank" rel="noreferrer">https://zen.kosaidovn.com/</a>{'\n'}
+                [学校] Tieng Viet Oi 【ベトナム・ハノイ】{'\n'}
+                <a href="https://www.tiengvietoi.com/" className="text-blue-500 underline" target="_blank" rel="noreferrer">https://www.tiengvietoi.com/</a>
               </>
             )}
           </div>

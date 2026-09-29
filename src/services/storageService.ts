@@ -294,6 +294,7 @@ class StorageService {
   async unlockNextStage(): Promise<void> {
     const current = await this.getUnlockedStage();
     await this.setPreference('unlocked_stage', current + 1);
+    window.dispatchEvent(new CustomEvent('stage_changed'));
   }
 
   /* ===================== PRONUNCIATION RESULTS HELPERS ===================== */
@@ -357,6 +358,7 @@ class StorageService {
         const direction = updated.currentLevel > levelData.currentLevel ? 'up' : 'down';
         trackLevelChange(direction, levelData.currentLevel, updated.currentLevel);
         setUserProps({ current_level: updated.currentLevel });
+        window.dispatchEvent(new CustomEvent('level_changed'));
       }
       
       // If we just entered Level 0 or Level 8, record the score that got us there

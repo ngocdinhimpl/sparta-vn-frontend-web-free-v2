@@ -66,6 +66,12 @@ function ToastItem({ toast, index }: ToastItemProps) {
 
   return (
     <div
+      onClick={() => {
+        if (toast.onClick) {
+          toast.onClick();
+          hideToast(toast.id);
+        }
+      }}
       className={`
         ${getToastStyles()}
         min-w-[320px] max-w-md
@@ -74,6 +80,7 @@ function ToastItem({ toast, index }: ToastItemProps) {
         flex items-start gap-3
         animate-in slide-in-from-right-full fade-in duration-300
         hover:shadow-xl transition-shadow
+        ${toast.onClick ? 'cursor-pointer hover:opacity-90' : ''}
       `}
       style={{ 
         animation: 'slideInRight 0.3s ease-out',
@@ -84,13 +91,16 @@ function ToastItem({ toast, index }: ToastItemProps) {
       </div>
       
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold leading-relaxed break-words">
+        <p className={`text-sm font-semibold leading-relaxed break-words ${toast.onClick ? 'underline underline-offset-2' : ''}`}>
           {toast.message}
         </p>
       </div>
 
       <button
-        onClick={() => hideToast(toast.id)}
+        onClick={(e) => {
+          e.stopPropagation();
+          hideToast(toast.id);
+        }}
         className="flex-shrink-0 ml-2 text-slate-400 hover:text-slate-600 transition-colors"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

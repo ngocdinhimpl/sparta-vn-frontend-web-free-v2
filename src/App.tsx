@@ -96,10 +96,8 @@ const App: React.FC = () => {
       });
     };
 
-    window.addEventListener('level_changed', handleProgressChange);
     window.addEventListener('stage_changed', handleProgressChange);
     return () => {
-      window.removeEventListener('level_changed', handleProgressChange);
       window.removeEventListener('stage_changed', handleProgressChange);
     };
   }, [showToast]);

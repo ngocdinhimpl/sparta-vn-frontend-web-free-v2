@@ -216,9 +216,13 @@ const PronunciationDetail: React.FC<PronunciationDetailProps> = ({
       const speaker = Math.floor(Math.random() * 4) + 1;
       const folder = item.type === 'phrase' ? 'phase' : 'word';
       const prefix = item.type === 'phrase' ? 'phase' : 'word';
-      // Strip prefix from ID (e.g. 'wt1-1' → '1', 'pt2-10' → '10')
+      // Extract the audio folder's stage from the ID prefix (e.g. 'wt1-11' → '1', 'wt2-11' → '2')
+      const match = String(item.id).match(/^[a-z]+(\d+)-/);
+      const audioFolderStage = match ? match[1] : '1';
+      
+      // Strip prefix from ID (e.g. 'wt1-11' → '11', 'pt2-10' → '10')
       const numericId = String(item.id).replace(/^[a-z0-9]+-/, '');
-      const stagePath = item.stage ? `stage${item.stage}` : 'stage1';
+      const stagePath = `stage${audioFolderStage}`;
       const audioPath = `/audio/${folder}/${stagePath}/${prefix}-${speaker}-${numericId}.mp3`;
 
       // Always create a new Audio instance so the correct random path is used

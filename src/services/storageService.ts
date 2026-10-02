@@ -287,13 +287,20 @@ class StorageService {
 
   /* ===================== STAGE HELPERS ===================== */
 
-  async getUnlockedStage(): Promise<number> {
-    return this.getPreference<number>('unlocked_stage', 1);
+  async getUnlockedStage(type: VocabType = 'word'): Promise<number> {
+    const specificStage = await this.getPreference<number | null>(`unlocked_stage_${type}`, null);
+    if (specificStage !== null) return specificStage;
+    
+    // Legacy fallback: if word, fallback to global unlocked_stage
+    if (type === 'word') {
+      return this.getPreference<number>('unlocked_stage', 1);
+    }
+    return 1;
   }
 
-  async unlockNextStage(): Promise<void> {
-    const current = await this.getUnlockedStage();
-    await this.setPreference('unlocked_stage', current + 1);
+  async unlockNextStage(type: VocabType = 'word'): Promise<void> {
+    const current = await this.getUnlockedStage(type);
+    await this.setPreference(`unlocked_stage_${type}`, current + 1);
     window.dispatchEvent(new CustomEvent('stage_changed'));
   }
 
@@ -380,28 +387,30 @@ class StorageService {
     // Update progression stage logic
     try {
       const vocabulary = await this.getVocabulary() || [];
-      const unlockedStage = await this.getUnlockedStage();
       const currentVocabItem = vocabulary.find(v => v.id === vocab_id);
       
-      if (currentVocabItem && currentVocabItem.stage === unlockedStage) {
-        // Count how many items in this stage and of the same type are completed
-        const allResults = await this.getAllPronunciationResults();
-        const stageItems = vocabulary.filter(v => v.stage === unlockedStage && v.type === currentVocabItem.type);
-        
-        const completedStageItems = stageItems.filter(item => 
-          allResults.some(res => res.vocab_id === item.id)
-        );
-        
-        if (completedStageItems.length >= 10) {
-          let totalScore = 0;
-          for (const item of completedStageItems) {
-            const res = allResults.find(r => r.vocab_id === item.id);
-            totalScore += res?.averageOverallScore || 0;
-          }
-          const averageScore = totalScore / completedStageItems.length;
+      if (currentVocabItem) {
+        const unlockedStage = await this.getUnlockedStage(currentVocabItem.type);
+        if (currentVocabItem.stage === unlockedStage) {
+          // Count how many items in this stage and of the same type are completed
+          const allResults = await this.getAllPronunciationResults();
+          const stageItems = vocabulary.filter(v => v.stage === unlockedStage && v.type === currentVocabItem.type);
+          
+          const completedStageItems = stageItems.filter(item => 
+            allResults.some(res => res.vocab_id === item.id)
+          );
+          
+          if (completedStageItems.length >= 10) {
+            let totalScore = 0;
+            for (const item of completedStageItems) {
+              const res = allResults.find(r => r.vocab_id === item.id);
+              totalScore += res?.averageOverallScore || 0;
+            }
+            const averageScore = totalScore / completedStageItems.length;
 
-          if (averageScore >= 60) {
-            await this.unlockNextStage();
+            if (averageScore >= 60) {
+              await this.unlockNextStage(currentVocabItem.type);
+            }
           }
         }
       }

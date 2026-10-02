@@ -94,7 +94,7 @@ const StageSelection: React.FC<StageSelectionProps> = ({ vocabType, onSelect, on
 
   useEffect(() => {
     const loadData = async () => {
-      const stage = await storageService.getUnlockedStage();
+      const stage = await storageService.getUnlockedStage(vocabType);
       setUnlockedStage(stage);
       
       // Calculate averages for each stage

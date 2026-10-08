@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { storageService } from '@/services/storageService';
 import { cloudStorageService } from '@/services/cloudStorageService';
-import { AVAILABLE_AVATARS, getDashboardAvatarsForSet } from '@/constants';
+import { AVAILABLE_AVATARS, getDashboardAvatarsForSet, RECOMMENDED_SCHOOLS } from '@/constants';
 import AvatarSelection from './AvatarSelection';
 import { useTranslation } from '@/i18n';
 import { auth } from '@/services/firebase';
 import { updateProfile } from 'firebase/auth';
-import { trackAvatarSelected } from '@/services/analyticsService';
+import { trackAvatarSelected, trackEvent } from '@/services/analyticsService';
 
 interface LevelCompletionFlowProps {
   currentLevel: 0 | 8;
@@ -224,10 +224,21 @@ const LevelCompletionFlow: React.FC<LevelCompletionFlowProps> = ({ currentLevel,
                 発音は基礎からやり直すべしだ{'\n\n'}
                 学校や教材で習ってみてはいかがだろう？{'\n'}
                 以下を参考にすべし{'\n'}
-                [学校] ZEN外国語教育センター 【ベトナム・ハノイ】{'\n'}
-                <a href="https://zen.kosaidovn.com/" className="text-blue-500 underline" target="_blank" rel="noreferrer">https://zen.kosaidovn.com/</a>{'\n'}
-                [学校] Tieng Viet Oi 【ベトナム・ハノイ】{'\n'}
-                <a href="https://www.tiengvietoi.com/" className="text-blue-500 underline" target="_blank" rel="noreferrer">https://www.tiengvietoi.com/</a>
+                {RECOMMENDED_SCHOOLS.map((school, index) => (
+                  <React.Fragment key={school.id}>
+                    [学校] {school.name} {school.name.includes('Tieng Viet Oi') || school.name.includes('ZEN') ? '【ベトナム・ハノイ】' : ''}{'\n'}
+                    <a 
+                      href={school.url} 
+                      className="text-blue-500 underline" 
+                      target="_blank" 
+                      rel="noreferrer"
+                      onClick={() => trackEvent('school_link_click', { url: school.url, school: school.name })}
+                    >
+                      {school.url}
+                    </a>
+                    {index < RECOMMENDED_SCHOOLS.length - 1 ? '\n' : ''}
+                  </React.Fragment>
+                ))}
               </>
             )}
           </div>

@@ -1,4 +1,6 @@
 import React from 'react';
+import { trackEvent } from '../../services/analyticsService';
+import { RECOMMENDED_SCHOOLS } from '../../constants';
 
 interface Props {
   isOpen: boolean;
@@ -21,19 +23,20 @@ export const SchoolRecommendationModal: React.FC<Props> = ({ isOpen, onClose }) 
         <div className="space-y-4 text-sm text-slate-700 leading-relaxed max-h-[60vh] overflow-y-auto pr-2">
           <p>発音を基礎からやり直したい、さらに上達したい方へ。以下の学校や教材での学習をおすすめします。</p>
           
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-            <p className="font-bold text-slate-900 mb-1">[学校] ZEN外国語教育センター 【ベトナム・ハノイ】</p>
-            <a href="https://zen.kosaidovn.com/" className="text-blue-500 hover:underline break-all" target="_blank" rel="noreferrer">
-              https://zen.kosaidovn.com/
-            </a>
-          </div>
-
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-            <p className="font-bold text-slate-900 mb-1">[学校] Tieng Viet Oi 【ベトナム・ハノイ】</p>
-            <a href="https://www.tiengvietoi.com/" className="text-blue-500 hover:underline break-all" target="_blank" rel="noreferrer">
-              https://www.tiengvietoi.com/
-            </a>
-          </div>
+          {RECOMMENDED_SCHOOLS.map((school) => (
+            <div key={school.id} className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+              <p className="font-bold text-slate-900 mb-1">[学校] {school.name} {school.name.includes('Tieng Viet Oi') || school.name.includes('ZEN') ? '【ベトナム・ハノイ】' : ''}</p>
+              <a 
+                href={school.url} 
+                className="text-blue-500 hover:underline break-all" 
+                target="_blank" 
+                rel="noreferrer"
+                onClick={() => trackEvent('school_link_click', { url: school.url, school: school.name })}
+              >
+                {school.url}
+              </a>
+            </div>
+          ))}
         </div>
 
         <button

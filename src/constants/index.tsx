@@ -195,6 +195,25 @@ export const Icons = {
   )
 };
 
+export interface SchoolRecommendation {
+  id: string;
+  name: string;
+  url: string;
+}
+
+export const RECOMMENDED_SCHOOLS: SchoolRecommendation[] = [
+  {
+    id: 'zen',
+    name: 'ZEN外国語教育センター',
+    url: 'https://zen.kosaidovn.com/'
+  },
+  {
+    id: 'tiengvietoi',
+    name: 'Tieng Viet Oi',
+    url: 'https://www.tiengvietoi.com/'
+  }
+];
+
 // Avatar Set Metadata
 export interface AvatarSet {
   id: string;

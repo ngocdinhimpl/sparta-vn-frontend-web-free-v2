@@ -22,7 +22,7 @@ export const ja: Translations = {
     home: 'ホーム',
     training: 'トレーニング',
     history: '履歴',
-    ranking: '覇者と敗者',
+    ranking: '殿堂と奈落',
     settings: '設定',
     feedback: '(β版)ご意見箱',
   },

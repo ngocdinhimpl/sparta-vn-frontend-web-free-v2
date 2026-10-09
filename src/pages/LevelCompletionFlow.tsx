@@ -6,7 +6,7 @@ import AvatarSelection from './AvatarSelection';
 import { useTranslation } from '@/i18n';
 import { auth } from '@/services/firebase';
 import { updateProfile } from 'firebase/auth';
-import { trackAvatarSelected, trackEvent } from '@/services/analyticsService';
+import { trackAvatarSelected, trackSchoolLinkClick } from '@/services/analyticsService';
 
 interface LevelCompletionFlowProps {
   currentLevel: 0 | 8;
@@ -232,7 +232,7 @@ const LevelCompletionFlow: React.FC<LevelCompletionFlowProps> = ({ currentLevel,
                       className="text-blue-500 underline" 
                       target="_blank" 
                       rel="noreferrer"
-                      onClick={() => trackEvent('school_link_click', { url: school.url, school: school.name })}
+                      onClick={() => trackSchoolLinkClick(school.url, school.name)}
                     >
                       {school.url}
                     </a>

@@ -223,6 +223,13 @@ export function trackUiClick(params: {
   });
 }
 
+export function trackSchoolLinkClick(url: string, schoolName: string): void {
+  trackEvent('school_link_click', {
+    url,
+    school: schoolName,
+  });
+}
+
 export default {
   trackEvent,
   trackPageView,

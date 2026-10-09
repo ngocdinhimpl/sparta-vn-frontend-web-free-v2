@@ -1,5 +1,5 @@
 import React from 'react';
-import { trackEvent } from '../../services/analyticsService';
+import { trackSchoolLinkClick } from '../../services/analyticsService';
 import { RECOMMENDED_SCHOOLS } from '../../constants';
 
 interface Props {
@@ -31,7 +31,7 @@ export const SchoolRecommendationModal: React.FC<Props> = ({ isOpen, onClose }) 
                 className="text-blue-500 hover:underline break-all" 
                 target="_blank" 
                 rel="noreferrer"
-                onClick={() => trackEvent('school_link_click', { url: school.url, school: school.name })}
+                onClick={() => trackSchoolLinkClick(school.url, school.name)}
               >
                 {school.url}
               </a>

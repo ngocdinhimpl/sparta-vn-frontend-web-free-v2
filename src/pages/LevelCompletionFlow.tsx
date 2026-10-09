@@ -232,7 +232,7 @@ const LevelCompletionFlow: React.FC<LevelCompletionFlowProps> = ({ currentLevel,
                       className="text-blue-500 underline" 
                       target="_blank" 
                       rel="noreferrer"
-                      onClick={() => trackSchoolLinkClick(school.url, school.name)}
+                      onClick={() => trackSchoolLinkClick(school.url, school.name, school.id)}
                     >
                       {school.url}
                     </a>

@@ -31,7 +31,7 @@ export const SchoolRecommendationModal: React.FC<Props> = ({ isOpen, onClose }) 
                 className="text-blue-500 hover:underline break-all" 
                 target="_blank" 
                 rel="noreferrer"
-                onClick={() => trackSchoolLinkClick(school.url, school.name)}
+                onClick={() => trackSchoolLinkClick(school.url, school.name, school.id)}
               >
                 {school.url}
               </a>

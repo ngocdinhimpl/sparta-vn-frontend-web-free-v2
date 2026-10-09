@@ -223,8 +223,8 @@ export function trackUiClick(params: {
   });
 }
 
-export function trackSchoolLinkClick(url: string, schoolName: string): void {
-  trackEvent('school_link_click', {
+export function trackSchoolLinkClick(url: string, schoolName: string, schoolId: string): void {
+  trackEvent(`school_link_click_${schoolId}`, {
     url,
     school: schoolName,
   });

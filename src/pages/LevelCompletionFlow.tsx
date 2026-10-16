@@ -226,7 +226,7 @@ const LevelCompletionFlow: React.FC<LevelCompletionFlowProps> = ({ currentLevel,
                 以下を参考にすべし{'\n'}
                 {RECOMMENDED_SCHOOLS.map((school, index) => (
                   <React.Fragment key={school.id}>
-                    [学校] {school.name} {school.name.includes('Tieng Viet Oi') || school.name.includes('ZEN') ? '【ベトナム・ハノイ】' : ''}{'\n'}
+                    {school.category || '[学校]'} {school.name}{school.locationNote ? ` ${school.locationNote}` : ''}{'\n'}
                     <a 
                       href={school.url} 
                       className="text-blue-500 underline" 

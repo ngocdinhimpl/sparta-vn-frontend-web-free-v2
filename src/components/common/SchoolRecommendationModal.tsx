@@ -25,7 +25,9 @@ export const SchoolRecommendationModal: React.FC<Props> = ({ isOpen, onClose }) 
           
           {RECOMMENDED_SCHOOLS.map((school) => (
             <div key={school.id} className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-              <p className="font-bold text-slate-900 mb-1">[学校] {school.name} {school.name.includes('Tieng Viet Oi') || school.name.includes('ZEN') ? '【ベトナム・ハノイ】' : ''}</p>
+              <p className="font-bold text-slate-900 mb-1">
+                {school.category || '[学校]'} {school.name}{school.locationNote ? ` ${school.locationNote}` : ''}
+              </p>
               <a 
                 href={school.url} 
                 className="text-blue-500 hover:underline break-all" 

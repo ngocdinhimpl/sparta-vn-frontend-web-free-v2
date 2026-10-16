@@ -224,6 +224,7 @@ export function trackUiClick(params: {
 }
 
 export function trackSchoolLinkClick(url: string, schoolName: string, schoolId: string): void {
+  console.log(`[Analytics] trackSchoolLinkClick -> event: school_link_click_${schoolId}`, { url, schoolName });
   trackEvent(`school_link_click_${schoolId}`, {
     url,
     school: schoolName,

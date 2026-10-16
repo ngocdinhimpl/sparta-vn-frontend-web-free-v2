@@ -199,18 +199,30 @@ export interface SchoolRecommendation {
   id: string;
   name: string;
   url: string;
+  category?: string;
+  locationNote?: string;
 }
 
 export const RECOMMENDED_SCHOOLS: SchoolRecommendation[] = [
   {
     id: 'zen',
     name: 'ZEN外国語教育センター',
-    url: 'https://zen.kosaidovn.com/'
+    url: 'https://zen.kosaidovn.com/',
+    category: '[学校]',
+    locationNote: '【ベトナム・ハノイ】'
   },
   {
     id: 'tiengvietoi',
     name: 'Tieng Viet Oi',
-    url: 'https://www.tiengvietoi.com/'
+    url: 'https://www.tiengvietoi.com/',
+    category: '[学校]',
+    locationNote: '【ベトナム・ハノイ】'
+  },
+  {
+    id: 'ikeda_book',
+    name: 'いちばんやさしい 使えるベトナム語入門（池田書店）',
+    url: 'https://www.amazon.co.jp/dp/4262169847',
+    category: '[教材(書籍)]'
   }
 ];
 
